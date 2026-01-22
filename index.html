@@ -12,69 +12,64 @@
     <style>
         :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007bff; --danger: #dc3545; }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; }
-        header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
-        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; }
-        .banner { height: 180px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
+        
+        header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; align-items: center; padding: 0.8rem 1.5rem; gap: 20px; }
+        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.6rem; }
+        .header-search { flex-grow: 1; display: flex; justify-content: center; }
+        .search-input { width: 100%; max-width: 400px; padding: 8px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+
+        .banner { height: 180px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; }
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
-        .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; position: relative; display: flex; flex-direction: column; }
         .card img { width: 100%; height: 320px; object-fit: cover; }
-        .badge-desc { position: absolute; top: 10px; left: 10px; background: var(--accent); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; }
         .info { padding: 1.2rem; text-align: center; flex-grow: 1; }
-        .price-old { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 5px; }
         .price-new { color: var(--accent); font-weight: 700; font-size: 1.3rem; }
-        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; margin-top: 10px; }
         
+        /* ZONA DE CARGA DE IMAGEN */
+        .drop-zone { border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 10px; cursor: pointer; margin-bottom: 10px; background: #f9f9f9; transition: 0.3s; }
+        .drop-zone:hover { border-color: var(--accent); background: #fff5f8; }
+        #imgPreview { width: 100%; max-height: 150px; object-fit: contain; display: none; margin-bottom: 10px; border-radius: 5px; }
+
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
-        
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
-        .remove-btn { color: var(--danger); cursor: pointer; font-weight: bold; font-size: 12px; border: 1px solid var(--danger); padding: 3px 8px; border-radius: 5px; }
-        
-        .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.8rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 2000; }
-        #cartCount { font-size: 13px; background: #ff0000; color: white; padding: 2px 7px; border-radius: 50%; position: absolute; top: 8px; right: 8px; font-weight: bold; border: 2px solid white; }
-        
-        .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f8f8f8; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
         input { width: 100%; padding: 12px; margin-bottom: 0.8rem; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        
+        .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 2000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f8f8f8; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Makai</h1>
-    <button style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;" onclick="verificarAdmin()">Panel Admin</button>
+    <div class="header-search"><input type="text" id="searchInput" class="search-input" placeholder="Buscar..." onkeyup="filtrarProductos()"></div>
+    <button onclick="verificarAdmin()" style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">Admin</button>
 </header>
 
 <div class="banner"><h2>Joyas que inspiran</h2></div>
 <div class="container"><div id="gallery" class="gallery"></div></div>
 
-<div class="cart-float" onclick="abrirModalCarrito()">
-    🛒 <span id="cartCount">0</span>
-</div>
-
-<div id="cartModal" class="modal">
-    <div class="modal-content">
-        <h3 style="margin-top:0;">Tu Lista de Deseos ✨</h3>
-        <div id="cartList"></div>
-        <div id="cartTotal" style="margin: 20px 0; font-weight: bold; font-size: 1.2rem; text-align: right; border-top: 1px solid #eee; padding-top: 10px;"></div>
-        <button class="btn-add" style="background: var(--whatsapp); margin-bottom:10px;" onclick="confirmarPedidoWhatsApp()">Confirmar y enviar a WhatsApp</button>
-        <button style="width:100%; border:none; background:none; cursor:pointer; color:gray;" onclick="cerrarModalCarrito()">Cerrar</button>
-    </div>
-</div>
-
 <div id="adminPanel" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Nuevo Producto</h3>
         <input id="p_id" type="hidden">
-        <input id="p_img" placeholder="Link de Imagen">
-        <input id="p_name" placeholder="Nombre">
+        
+        <div class="drop-zone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault()" ondrop="manejarDrop(event)">
+            <p id="dropText">Arrastra una imagen aquí o haz clic</p>
+            <img id="imgPreview">
+            <input type="file" id="fileInput" hidden accept="image/*" onchange="convertirImagen(this.files[0])">
+        </div>
+        <input id="p_img_url" type="hidden"> <input id="p_name" placeholder="Nombre de la pieza">
         <input id="p_price" type="number" placeholder="Precio $">
-        <input id="p_sale" type="number" placeholder="Precio Oferta $ (Opcional)">
-        <button class="btn-add" onclick="guardarProducto()">Guardar</button>
+        <input id="p_sale" type="number" placeholder="Precio Oferta (Opcional)">
+        
+        <button class="btn-add" onclick="guardarProducto()">Guardar Joya</button>
         <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;" onclick="cerrarModal()">Cancelar</button>
         <hr>
-        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">SALIR DEL MODO ADMIN</button>
+        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer;">SALIR DEL ADMIN</button>
     </div>
 </div>
 
@@ -88,109 +83,83 @@
         messagingSenderId: "95115227741",
         appId: "1:95115227741:web:ae5644751ced382a4453b4"
     };
-    
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let carrito = [];
+    let productosLocales = [];
 
-    // MOSTRAR PRODUCTOS
+    // LÓGICA DE CARGA DE IMAGEN
+    function convertirImagen(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = function() {
+            document.getElementById('p_img_url').value = reader.result;
+            const preview = document.getElementById('imgPreview');
+            preview.src = reader.result;
+            preview.style.display = 'block';
+            document.getElementById('dropText').style.display = 'none';
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function manejarDrop(e) {
+        e.preventDefault();
+        convertirImagen(e.dataTransfer.files[0]);
+    }
+
+    // BASE DE DATOS Y RENDER
     db.ref('productos').on('value', (snapshot) => {
         const data = snapshot.val();
+        productosLocales = [];
+        for (let id in data) productosLocales.push({ id, ...data[id] });
+        renderizarGaleria(productosLocales);
+    });
+
+    function renderizarGaleria(productos) {
         const gal = document.getElementById('gallery');
         gal.innerHTML = '';
         const esAdmin = localStorage.getItem('makaiAdmin') === 'true';
-
-        for (let id in data) {
-            const p = data[id];
-            const tieneOferta = p.sale && parseFloat(p.sale) < parseFloat(p.price);
-            const precioFinal = tieneOferta ? p.sale : p.price;
-            
+        productos.forEach(p => {
+            const finalP = p.sale && parseFloat(p.sale) < parseFloat(p.price) ? p.sale : p.price;
             gal.innerHTML += `
                 <div class="card">
-                    ${tieneOferta ? `<div class="badge-desc">OFERTA</div>` : ''}
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando...'">
+                    <img src="${p.img}">
                     <div class="info">
                         <h4>${p.name}</h4>
-                        <div>
-                            ${tieneOferta ? `<span class="price-old">$${p.price}</span>` : ''}
-                            <span class="price-new">$${precioFinal}</span>
-                        </div>
-                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${precioFinal})">Agregar al carrito</button>
+                        <span class="price-new">$${finalP}</span>
                     </div>
-                    ${esAdmin ? `<div class="admin-controls"><button class="edit-btn" onclick="prepararEdicion('${id}','${p.name}','${p.price}','${p.img}','${p.sale||''}')">Editar</button><button class="del-btn" onclick="eliminar('${id}')">Borrar</button></div>` : ''}
+                    ${esAdmin ? `<div class="admin-controls"><button onclick="eliminar('${p.id}')" style="background:var(--danger); color:white; border:none; padding:5px; border-radius:5px; cursor:pointer;">Borrar</button></div>` : ''}
                 </div>`;
-        }
-    });
-
-    // LÓGICA CARRITO
-    function agregarAlCarrito(nombre, precio) {
-        carrito.push({nombre, precio});
-        document.getElementById('cartCount').innerText = carrito.length;
-        // Opcional: una pequeña alerta visual
-        console.log("Agregado:", nombre);
-    }
-
-    function abrirModalCarrito() {
-        const lista = document.getElementById('cartList');
-        const totalDiv = document.getElementById('cartTotal');
-        lista.innerHTML = '';
-        let total = 0;
-
-        if(carrito.length === 0) {
-            lista.innerHTML = "<p>Aún no has agregado nada ☹️</p>";
-            totalDiv.innerText = "Total: $0.00";
-        } else {
-            carrito.forEach((item, index) => {
-                total += parseFloat(item.precio);
-                lista.innerHTML += `
-                    <div class="cart-item">
-                        <span>${item.nombre} ($${item.precio})</span>
-                        <span class="remove-btn" onclick="quitarDelCarrito(${index})">Quitar</span>
-                    </div>`;
-            });
-            totalDiv.innerText = "Total: $" + total.toFixed(2);
-        }
-        document.getElementById('cartModal').classList.add('active');
-    }
-
-    function quitarDelCarrito(index) {
-        carrito.splice(index, 1);
-        document.getElementById('cartCount').innerText = carrito.length;
-        abrirModalCarrito();
-    }
-
-    function confirmarPedidoWhatsApp() {
-        if(carrito.length === 0) return alert("Tu carrito está vacío.");
-        let msg = "¡Hola Makai! ✨ Me interesan estos productos:\n\n";
-        let total = 0;
-        carrito.forEach(i => {
-            msg += `• ${i.nombre} ($${i.precio})\n`;
-            total += parseFloat(i.precio);
         });
-        msg += `\n*Total a pagar: $${total.toFixed(2)}*`;
-        window.open(`https://wa.me/584123580010?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    function cerrarModalCarrito() { document.getElementById('cartModal').classList.remove('active'); }
-
-    // ADMIN
     function guardarProducto() {
         const id = document.getElementById('p_id').value;
-        const p = { img: document.getElementById('p_img').value, name: document.getElementById('p_name').value, price: document.getElementById('p_price').value, sale: document.getElementById('p_sale').value };
+        const p = {
+            img: document.getElementById('p_img_url').value,
+            name: document.getElementById('p_name').value,
+            price: document.getElementById('p_price').value,
+            sale: document.getElementById('p_sale').value
+        };
+        if(!p.img || !p.name) return alert("Falta imagen o nombre");
         if(id) db.ref('productos/' + id).set(p); else db.ref('productos').push(p);
         cerrarModal();
     }
-    function prepararEdicion(id, n, p, i, s) {
-        document.getElementById('p_id').value = id; document.getElementById('p_name').value = n; document.getElementById('p_price').value = p; document.getElementById('p_img').value = i; document.getElementById('p_sale').value = s;
-        document.getElementById('adminPanel').classList.add('active');
-    }
-    function cerrarSesion() { localStorage.removeItem('makaiAdmin'); location.reload(); }
-    function eliminar(id) { if(confirm("¿Borrar?")) db.ref('productos/' + id).remove(); }
+
     function verificarAdmin() {
         if(localStorage.getItem('makaiAdmin') === 'true') document.getElementById('adminPanel').classList.add('active');
         else if(prompt("Clave:") === "Makai") { localStorage.setItem('makaiAdmin', 'true'); location.reload(); }
     }
-    function cerrarModal() { document.getElementById('adminPanel').classList.remove('active'); }
+    function cerrarModal() { 
+        document.getElementById('adminPanel').classList.remove('active');
+        document.getElementById('imgPreview').style.display = 'none';
+        document.getElementById('dropText').style.display = 'block';
+    }
+    function eliminar(id) { if(confirm("¿Borrar?")) db.ref('productos/' + id).remove(); }
+    function cerrarSesion() { localStorage.removeItem('makaiAdmin'); location.reload(); }
+    function filtrarProductos() {
+        const t = document.getElementById('searchInput').value.toLowerCase();
+        renderizarGaleria(productosLocales.filter(p => p.name.toLowerCase().includes(t)));
+    }
 </script>
 </body>
 </html>
