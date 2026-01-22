@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tienda Online de Bisutería</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ===== BASE GENERAL (PC Y MÓVIL) ===== */
+body{
+  margin:0;
+  font-family:'Segoe UI',Arial,sans-serif;
+  background:linear-gradient(135deg,#f8e7f0,#fdf6e3,#e6f0ff);
+  min-height:100vh;
+}
+header{
+  background:#111;
+  color:#fff;
+  padding:1rem;
+  text-align:center;
+}
+.container{padding:1.5rem}
+.hidden{display:none}
+
+button{
+  padding:.6rem 1rem;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+.btn-dark{background:#111;color:#fff}
+.btn-light{background:#fff;color:#111}
+.btn-green{background:#25D366;color:#fff;width:100%;margin-top:1rem;display:block;text-align:center;text-decoration:none}
+
+#adminBtn{
+  position:fixed;
+  top:15px;
+  right:15px;
+  z-index:1000;
+}
+
+/* ===== CLIENTE ===== */
+#client{
+  background:linear-gradient(180deg,#fff0f7,#f0f8ff);
+  border-radius:20px;
+  padding:1rem;
+}
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1.2rem;
+}
+.card{
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.12);
+  overflow:hidden;
+}
+.card img{width:100%;height:200px;object-fit:cover}
+.info{text-align:center;padding:1rem}
+
+/* ===== ADMIN ===== */
+.login,.admin{
+  max-width:420px;
+  margin:1rem auto;
+  background:#fff;
+  padding:1.2rem;
+  border-radius:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.15);
+}
+input{
+  width:100%;
+  padding:.55rem;
+  margin-bottom:.6rem;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+.admin-item{border-bottom:1px solid #ddd;padding:.5rem 0}
+
+/* ===== CARRITO ===== */
+.cart{
+  position:fixed;
+  right:0;
+  top:0;
+  width:320px;
+  height:100%;
+  background:#fff;
+  box-shadow:-6px 0 16px rgba(0,0,0,.2);
+  padding:1rem;
+}
+
+/* ===== RESPONSIVE (PC Y MÓVIL SIN ERRORES) ===== */
+@media(max-width:768px){
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .cart{width:100%}
+}
+@media(max-width:480px){
+  .gallery{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header><h2>💎 Bisutería Online</h2></header>
+<button id="adminBtn" class="btn-dark" onclick="showLogin()">Admin</button>
+
+<div class="container">
+
+<div id="login" class="login hidden">
+<h3>Login Admin</h3>
+<input id="user" placeholder="Usuario">
+<input id="pass" type="password" placeholder="Contraseña">
+<button class="btn-dark" onclick="loginAdmin()">Entrar</button>
+</div>
+
+<div id="admin" class="admin hidden">
+<h3>Modo Admin</h3>
+<input id="imageInput" placeholder="Ruta imagen">
+<input id="nameInput" placeholder="Nombre">
+<input id="priceInput" type="number" placeholder="Precio">
+<button class="btn-dark" onclick="addProduct()">Agregar</button>
+<div id="adminList"></div>
+<button class="btn-light" onclick="logout()">Cerrar</button>
+</div>
+
+<div id="client">
+<h3>Catálogo</h3>
+<div id="gallery" class="gallery"></div>
+<button class="btn-dark" onclick="toggleCart()">🛒 Ver carrito</button>
+</div>
+</div>
+
+<div id="cart" class="cart hidden">
+<button class="btn-light" onclick="toggleCart()" style="float:right">✖</button>
+<h3>Carrito</h3>
+<div id="cartItems"></div>
+<a id="whatsapp" class="btn-green" target="_blank">Comprar por WhatsApp</a>
+</div>
+
+<script>
+const ADMIN_USER='admin';
+const ADMIN_PASS='1234';
+let products=JSON.parse(localStorage.getItem('products'))||[];
+let cart=[];
+
+function saveProducts(){localStorage.setItem('products',JSON.stringify(products))}
+
+products=products.map(p=>({
+  name:p.name,
+  price:parseFloat(p.price),
+  url:p.url,
+  discount:p.discount?parseFloat(p.discount):0
+}));
+saveProducts();
+
+const loginDiv=document.getElementById('login');
+const admin=document.getElementById('admin');
+const gallery=document.getElementById('gallery');
+const cartDiv=document.getElementById('cart');
+const cartItems=document.getElementById('cartItems');
+const whatsapp=document.getElementById('whatsapp');
+const adminList=document.getElementById('adminList');
+
+function showLogin(){loginDiv.classList.toggle('hidden')}
+function logout(){admin.classList.add('hidden')}
+
+function loginAdmin(){
+  if(user.value===ADMIN_USER&&pass.value===ADMIN_PASS){
+    loginDiv.classList.add('hidden');
+    admin.classList.remove('hidden');
+    renderAdmin();
+  } else alert('Datos incorrectos');
+}
+
+function addProduct(){
+  if(!imageInput.value||!nameInput.value||!priceInput.value) return;
+  products.push({name:nameInput.value,price:parseFloat(priceInput.value),url:imageInput.value,discount:0});
+  saveProducts();renderAdmin();renderProducts();
+  imageInput.value=nameInput.value=priceInput.value='';
+}
+
+function editProduct(i){
+  const p=products[i];
+  const n=prompt('Nombre',p.name);
+  const pr=prompt('Precio',p.price);
+  const img=prompt('Imagen',p.url);
+  if(n!==null) p.name=n;
+  if(!isNaN(pr)) p.price=parseFloat(pr);
+  if(img!==null) p.url=img;
+  saveProducts();renderAdmin();renderProducts();
+}
+
+function discountProduct(i){
+  const d=prompt('Descuento %',products[i].discount);
+  if(!isNaN(d)) products[i].discount=parseFloat(d);
+  saveProducts();renderAdmin();renderProducts();
+}
+
+function renderAdmin(){
+  adminList.innerHTML='';
+  products.forEach((p,i)=>{
+    adminList.innerHTML+=`<div class='admin-item'>${p.name} - $${p.price}<br><button onclick='editProduct(${i})'>Editar</button> <button onclick='discountProduct(${i})'>Descuento</button></div>`;
+  });
+}
+
+function renderProducts(){
+  gallery.innerHTML='';
+  products.forEach((p,i)=>{
+    let price=`<p>$${p.price.toFixed(2)}</p>`;
+    if(p.discount>0){
+      const f=(p.price*(1-p.discount/100)).toFixed(2);
+      price=`<p style='text-decoration:line-through;color:#888'>$${p.price.toFixed(2)}</p><p style='color:#e6005c;font-weight:bold'>$${f} (-${p.discount}%)</p>`;
+    }
+    gallery.innerHTML+=`<div class='card'><img src='${p.url}'><div class='info'><h4>${p.name}</h4>${price}<button class='btn-dark' onclick='addToCart(${i})'>Agregar</button></div></div>`;
+  });
+}
+
+function addToCart(i){cart.push(products[i]);renderCart()}
+function toggleCart(){cartDiv.classList.toggle('hidden')}
+
+function renderCart(){
+  cartItems.innerHTML='';
+  let msg='Hola, quiero comprar:%0A';
+  cart.forEach(p=>{cartItems.innerHTML+=`<div>${p.name}</div>`;msg+=`- ${p.name}%0A`});
+  whatsapp.href=`https://wa.me/584123580010?text=${msg}`;
+}
+
+renderProducts();
+</script>
+</body>
+</html>
