@@ -13,7 +13,7 @@
         :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007bff; --danger: #dc3545; }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; }
         header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
-        .banner { height: 200px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
+        .banner { height: 180px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
         .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -24,17 +24,20 @@
         .price-new { color: var(--accent); font-weight: 700; font-size: 1.3rem; }
         .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 10px; }
         
+        /* Controles de Admin */
         .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f8f8f8; }
         .del-btn { background: var(--danger); color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
         .edit-btn { background: var(--edit); color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; }
         
+        /* Modal Admin */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 90%; max-width: 400px; overflow-y: auto; max-height: 90vh; }
         input { width: 100%; padding: 12px; margin-bottom: 0.8rem; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
         
-        .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 2000; }
-        #cartCount { font-size: 12px; background: red; color: white; padding: 2px 6px; border-radius: 50%; position: absolute; top: 5px; right: 5px; }
+        /* CARRITO FLOTANTE (ESTO ES LO QUE TE FALTABA) */
+        .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.8rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 2000; }
+        #cartCount { font-size: 13px; background: #ff0000; color: white; padding: 2px 7px; border-radius: 50%; position: absolute; top: 8px; right: 8px; font-weight: bold; border: 2px solid white; }
     </style>
 </head>
 <body>
@@ -44,7 +47,7 @@
     <button style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;" onclick="verificarAdmin()">Panel Admin</button>
 </header>
 
-<div class="banner"><h2>Elegancia en cada detalle</h2></div>
+<div class="banner"><h2>Piezas que cuentan tu historia</h2></div>
 
 <div class="container"><div id="gallery" class="gallery"></div></div>
 
@@ -56,19 +59,19 @@
     <div class="modal-content">
         <h3 id="modalTitle">Gestionar Producto</h3>
         <input id="p_id" type="hidden">
-        <label style="font-size:12px;">Link de Imagen (Directo):</label>
+        <label style="font-size:12px;">Link Directo de Imagen:</label>
         <input id="p_img" placeholder="https://i.ibb.co/...">
-        <label style="font-size:12px;">Nombre:</label>
-        <input id="p_name" placeholder="Nombre de la joya">
+        <label style="font-size:12px;">Nombre de la Joya:</label>
+        <input id="p_name" placeholder="Ej: Anillo de plata">
         <label style="font-size:12px;">Precio Regular ($):</label>
-        <input id="p_price" type="number" placeholder="Ej: 50">
-        <label style="font-size:12px; color:var(--accent);">Precio Oferta ($) - Opcional:</label>
-        <input id="p_sale" type="number" placeholder="Solo si hay descuento">
+        <input id="p_price" type="number">
+        <label style="font-size:12px; color:var(--accent);">Precio Oferta ($):</label>
+        <input id="p_sale" type="number" placeholder="Opcional">
         
         <button class="btn-add" onclick="guardarProducto()">Guardar Cambios</button>
         <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;" onclick="cerrarModal()">Cancelar</button>
         <hr style="margin:20px 0; border:0; border-top:1px solid #eee;">
-        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">SALIR DEL MODO ADMIN</button>
+        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">CERRAR SESIÓN ADMIN</button>
     </div>
 </div>
 
@@ -87,7 +90,6 @@
     const db = firebase.database();
     let carrito = [];
 
-    // MOSTRAR PRODUCTOS
     db.ref('productos').on('value', (snapshot) => {
         const data = snapshot.val();
         const gal = document.getElementById('gallery');
@@ -102,7 +104,7 @@
             gal.innerHTML += `
                 <div class="card">
                     ${tieneDescuento ? `<div class="badge-desc">OFERTA</div>` : ''}
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando...'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Imagen+Makai'">
                     <div class="info">
                         <h4>${p.name}</h4>
                         <div>
@@ -113,33 +115,30 @@
                     </div>
                     ${esAdmin ? `
                         <div class="admin-controls">
-                            <button class="edit-btn" onclick="prepararEdicion('${id}', '${p.name}', '${p.price}', '${p.img}', '${p.sale || ''}')">Editar / Descuento</button>
+                            <button class="edit-btn" onclick="prepararEdicion('${id}', '${p.name}', '${p.price}', '${p.img}', '${p.sale || ''}')">Editar / Oferta</button>
                             <button class="del-btn" onclick="eliminar('${id}')">Borrar</button>
                         </div>` : ''}
                 </div>`;
         }
     });
 
-    // LÓGICA DEL CARRITO
     function agregarAlCarrito(nombre, precio) {
         carrito.push({nombre, precio});
         document.getElementById('cartCount').innerText = carrito.length;
-        alert("¡" + nombre + " añadido al carrito!");
     }
 
     function enviarWhatsApp() {
-        if(carrito.length === 0) return alert("El carrito está vacío.");
-        let mensaje = "¡Hola Makai! ✨ Me interesan estos productos:\n\n";
+        if(carrito.length === 0) return alert("¡El carrito está vacío!");
+        let texto = "¡Hola Makai! ✨ Quiero comprar estos artículos:\n\n";
         let total = 0;
         carrito.forEach(item => {
-            mensaje += `- ${item.nombre} ($${item.precio})\n`;
+            texto += `- ${item.nombre} ($${item.precio})\n`;
             total += parseFloat(item.precio);
         });
-        mensaje += `\n*Total estimado: $${total.toFixed(2)}*`;
-        window.open(`https://wa.me/584123580010?text=${encodeURIComponent(mensaje)}`, '_blank');
+        texto += `\n*Total de la orden: $${total.toFixed(2)}*`;
+        window.open(`https://wa.me/584123580010?text=${encodeURIComponent(texto)}`, '_blank');
     }
 
-    // FUNCIONES ADMIN
     function guardarProducto() {
         const id = document.getElementById('p_id').value;
         const p = {
@@ -148,15 +147,13 @@
             price: document.getElementById('p_price').value,
             sale: document.getElementById('p_sale').value
         };
-        if(!p.name || !p.img || !p.price) return alert("Completa los datos básicos.");
-        
+        if(!p.name || !p.img) return alert("Faltan datos");
         if(id) db.ref('productos/' + id).set(p);
         else db.ref('productos').push(p);
         cerrarModal();
     }
 
     function prepararEdicion(id, n, p, i, s) {
-        document.getElementById('modalTitle').innerText = "Editar Joya";
         document.getElementById('p_id').value = id;
         document.getElementById('p_name').value = n;
         document.getElementById('p_price').value = p;
@@ -165,24 +162,17 @@
         document.getElementById('adminPanel').classList.add('active');
     }
 
-    function cerrarSesion() {
-        localStorage.removeItem('makaiAdmin');
-        location.reload();
-    }
-
-    function eliminar(id) { if(confirm("¿Borrar este producto?")) db.ref('productos/' + id).remove(); }
-    
+    function cerrarSesion() { localStorage.removeItem('makaiAdmin'); location.reload(); }
+    function eliminar(id) { if(confirm("¿Eliminar?")) db.ref('productos/' + id).remove(); }
     function verificarAdmin() {
         if(localStorage.getItem('makaiAdmin') === 'true') {
-            document.getElementById('modalTitle').innerText = "Nuevo Producto";
             document.getElementById('p_id').value = '';
             document.getElementById('adminPanel').classList.add('active');
-        } else if(prompt("Clave Admin:") === "Makai") {
+        } else if(prompt("Clave:") === "Makai") {
             localStorage.setItem('makaiAdmin', 'true');
             location.reload();
         }
     }
-    
     function cerrarModal() { document.getElementById('adminPanel').classList.remove('active'); }
 </script>
 </body>
