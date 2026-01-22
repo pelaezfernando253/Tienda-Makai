@@ -10,7 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <style>
-        :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --blue: #007bff; }
+        :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007bff; }
         body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; color: #111; }
         header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
         header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
@@ -22,13 +22,16 @@
         .info { text-align: center; padding: 1.5rem; flex-grow: 1; }
         .price { color: var(--accent); font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; }
         .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
-        .admin-controls { display: flex; gap: 5px; padding: 10px; background: #fdfdfd; }
-        .del-btn { background: #ff4d4d; color: white; border: none; flex: 1; padding: 8px; border-radius: 5px; cursor: pointer; }
-        .edit-btn { background: var(--blue); color: white; border: none; flex: 1; padding: 8px; border-radius: 5px; cursor: pointer; }
+        
+        /* BOTONES DE ADMINISTRACIÓN */
+        .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f9f9f9; border-top: 1px solid #eee; }
+        .del-btn { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .edit-btn { background: var(--edit); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
         .modal.active { display: flex; }
         .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #ddd; outline: none; }
+        input { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #ddd; outline: none; box-sizing: border-box; }
         .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
@@ -40,7 +43,7 @@
 </header>
 
 <div class="banner">
-    <h2 style="font-family:'Playfair Display'; font-size:2.5rem;">Elegancia en cada detalle</h2>
+    <h2 style="font-family:'Playfair Display'; font-size:2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Elegancia en cada detalle</h2>
 </div>
 
 <div class="container">
@@ -52,15 +55,16 @@
 <div id="adminPanel" class="modal">
     <div class="modal-content">
         <h3 id="modalTitle">Nuevo Producto</h3>
-        <input id="p_id" type="hidden"> <input id="p_img" placeholder="URL de Imagen">
-        <input id="p_name" placeholder="Nombre del Producto">
+        <input id="p_id" type="hidden"> <input id="p_img" placeholder="URL de la imagen (Ej: de ImgBB)">
+        <input id="p_name" placeholder="Nombre del producto">
         <input id="p_price" type="number" placeholder="Precio ($)">
-        <button class="btn-add" id="saveBtn" onclick="guardarProducto()">Guardar en la Nube</button>
-        <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;" onclick="cerrarModal()">Cerrar</button>
+        <button class="btn-add" onclick="guardarCambios()">Guardar en la Nube</button>
+        <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer; color:gray;" onclick="cerrarModal()">Cancelar</button>
     </div>
 </div>
 
 <script>
+    // Configuración de tu proyecto Makai
     const firebaseConfig = {
         apiKey: "AIzaSyCsPFIJZ5tREVjBIJCLEdad1rVKkQlx9Qo",
         authDomain: "makai-3809b.firebaseapp.com",
@@ -75,6 +79,7 @@
     const db = firebase.database();
     let carrito = [];
 
+    // Función para mostrar los productos
     db.ref('productos').on('value', (snapshot) => {
         const data = snapshot.val();
         const gal = document.getElementById('gallery');
@@ -85,66 +90,96 @@
             const p = data[id];
             gal.innerHTML += `
                 <div class="card">
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando...'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Error+en+Imagen'">
                     <div class="info">
                         <h4>${p.name}</h4>
                         <div class="price">$${parseFloat(p.price).toFixed(2)}</div>
-                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${p.price})">Comprar</button>
+                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${p.price})">Comprar ahora</button>
                     </div>
                     ${esAdmin ? `
                         <div class="admin-controls">
-                            <button class="edit-btn" onclick="prepararEdicion('${id}', '${p.name}', '${p.price}', '${p.img}')">Editar</button>
-                            <button class="del-btn" onclick="eliminar('${id}')">Borrar</button>
+                            <button class="edit-btn" onclick="abrirEdicion('${id}', '${p.name}', '${p.price}', '${p.img}')">✎ Editar Datos</button>
+                            <button class="del-btn" onclick="eliminarProducto('${id}')">🗑 Borrar</button>
                         </div>` : ''}
                 </div>`;
         }
     });
 
-    function guardarProducto() {
+    // Función que decide si CREA un producto nuevo o EDITA uno existente
+    function guardarCambios() {
         const id = document.getElementById('p_id').value;
-        const p = {
+        const nuevoProducto = {
             img: document.getElementById('p_img').value,
             name: document.getElementById('p_name').value,
             price: document.getElementById('p_price').value
         };
 
-        if(!p.name || !p.img || !p.price) return alert("Llena todo");
+        if(!nuevoProducto.name || !nuevoProducto.img || !nuevoProducto.price) {
+            return alert("Por favor completa todos los campos.");
+        }
 
         if(id) {
-            db.ref('productos/' + id).update(p); // Actualiza si ya existe
+            // Si hay un ID, editamos el existente
+            db.ref('productos/' + id).set(nuevoProducto)
+                .then(() => alert("¡Producto actualizado!"));
         } else {
-            db.ref('productos').push(p); // Crea uno nuevo
+            // Si no hay ID, creamos uno nuevo
+            db.ref('productos').push(nuevoProducto)
+                .then(() => alert("¡Producto guardado!"));
         }
         cerrarModal();
     }
 
-    function prepararEdicion(id, nombre, precio, img) {
-        document.getElementById('modalTitle').innerText = "Editar Producto";
+    // Prepara el cuadro para editar
+    function abrirEdicion(id, nombre, precio, imagen) {
+        document.getElementById('modalTitle').innerText = "Editar Joya";
         document.getElementById('p_id').value = id;
         document.getElementById('p_name').value = nombre;
         document.getElementById('p_price').value = precio;
-        document.getElementById('p_img').value = img;
+        document.getElementById('p_img').value = imagen;
         document.getElementById('adminPanel').classList.add('active');
     }
 
-    function eliminar(id) {
-        if(confirm("¿Eliminar producto?")) db.ref('productos/' + id).remove();
+    function eliminarProducto(id) {
+        if(confirm("¿Estás segura de eliminar esta pieza de Makai?")) {
+            db.ref('productos/' + id).remove();
+        }
     }
 
     function verificarAdmin() {
         if(localStorage.getItem('makaiAdmin') === 'true') {
             document.getElementById('modalTitle').innerText = "Nuevo Producto";
             document.getElementById('p_id').value = '';
+            document.getElementById('p_img').value = '';
+            document.getElementById('p_name').value = '';
+            document.getElementById('p_price').value = '';
             document.getElementById('adminPanel').classList.add('active');
-        } else if(prompt("Clave:") === "Makai") {
-            localStorage.setItem('makaiAdmin', 'true');
-            location.reload();
+        } else {
+            if(prompt("Clave de Administrador:") === "Makai") {
+                localStorage.setItem('makaiAdmin', 'true');
+                location.reload();
+            }
         }
     }
 
     function cerrarModal() { document.getElementById('adminPanel').classList.remove('active'); }
-    function agregarAlCarrito(n, p) { carrito.push({n, p}); document.getElementById('cartCount').innerText = carrito.length; }
-    function abrirCarrito() { /* Lógica de WhatsApp igual a la anterior */ }
+
+    function agregarAlCarrito(n, p) {
+        carrito.push({n, p});
+        document.getElementById('cartCount').innerText = carrito.length;
+    }
+
+    function abrirCarrito() {
+        if(carrito.length === 0) return alert("El carrito está vacío.");
+        let texto = "¡Hola Makai! ✨ Me encantaron estos modelos:\n\n";
+        let total = 0;
+        carrito.forEach(i => {
+            texto += `- ${i.n} ($${i.p})\n`;
+            total += parseFloat(i.p);
+        });
+        texto += `\n*Total: $${total.toFixed(2)}*`;
+        window.open(`https://wa.me/584123580010?text=${encodeURIComponent(texto)}`, '_blank');
+    }
 </script>
 </body>
 </html>
