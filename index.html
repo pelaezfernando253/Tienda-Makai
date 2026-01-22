@@ -11,46 +11,32 @@
 
     <style>
         :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007bff; --danger: #dc3545; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; color: #111; }
-        
-        /* Navegación */
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; }
         header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
-        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
-        
-        /* Banner */
+        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; }
         .banner { height: 180px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
-        
-        /* Galería */
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
-        .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; position: relative; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .card img { width: 100%; height: 320px; object-fit: cover; }
-        
-        /* Etiquetas y Precios */
-        .badge-desc { position: absolute; top: 10px; left: 10px; background: var(--accent); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; z-index: 10; }
+        .badge-desc { position: absolute; top: 10px; left: 10px; background: var(--accent); color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; }
         .info { padding: 1.2rem; text-align: center; flex-grow: 1; }
         .price-old { text-decoration: line-through; color: #999; font-size: 0.9rem; margin-right: 5px; }
         .price-new { color: var(--accent); font-weight: 700; font-size: 1.3rem; }
-        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 10px; transition: 0.2s; }
-        .btn-add:active { transform: scale(0.98); }
-
-        /* Modales */
+        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; overflow-y: auto; max-height: 90vh; }
-        input { width: 100%; padding: 12px; margin-bottom: 0.8rem; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
         
-        /* Estilos del Carrito */
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 10px 0; font-size: 0.9rem; }
-        .remove-item { color: var(--danger); cursor: pointer; font-weight: bold; border: 1px solid var(--danger); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .remove-btn { color: var(--danger); cursor: pointer; font-weight: bold; font-size: 12px; border: 1px solid var(--danger); padding: 3px 8px; border-radius: 5px; }
         
         .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.8rem; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 2000; }
         #cartCount { font-size: 13px; background: #ff0000; color: white; padding: 2px 7px; border-radius: 50%; position: absolute; top: 8px; right: 8px; font-weight: bold; border: 2px solid white; }
-
-        /* Admin Controls */
-        .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f8f8f8; border-top: 1px solid #eee; }
-        .del-btn { background: var(--danger); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; }
-        .edit-btn { background: var(--edit); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; }
+        
+        .admin-controls { display: flex; flex-direction: column; gap: 5px; padding: 10px; background: #f8f8f8; }
+        input { width: 100%; padding: 12px; margin-bottom: 0.8rem; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -60,8 +46,7 @@
     <button style="background:#eee; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;" onclick="verificarAdmin()">Panel Admin</button>
 </header>
 
-<div class="banner"><h2>Brilla con Makai</h2></div>
-
+<div class="banner"><h2>Joyas que inspiran</h2></div>
 <div class="container"><div id="gallery" class="gallery"></div></div>
 
 <div class="cart-float" onclick="abrirModalCarrito()">
@@ -70,26 +55,26 @@
 
 <div id="cartModal" class="modal">
     <div class="modal-content">
-        <h3>Tu Selección ✨</h3>
+        <h3 style="margin-top:0;">Tu Lista de Deseos ✨</h3>
         <div id="cartList"></div>
-        <div id="cartTotal" style="margin: 20px 0; font-weight: bold; font-size: 1.2rem; text-align: right; border-top: 2px solid #eee; padding-top: 10px;"></div>
-        <button class="btn-add" style="background: var(--whatsapp);" onclick="confirmarPedido()">Pedir por WhatsApp</button>
-        <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer; color: #666;" onclick="cerrarModalCarrito()">Seguir comprando</button>
+        <div id="cartTotal" style="margin: 20px 0; font-weight: bold; font-size: 1.2rem; text-align: right; border-top: 1px solid #eee; padding-top: 10px;"></div>
+        <button class="btn-add" style="background: var(--whatsapp); margin-bottom:10px;" onclick="confirmarPedidoWhatsApp()">Confirmar y enviar a WhatsApp</button>
+        <button style="width:100%; border:none; background:none; cursor:pointer; color:gray;" onclick="cerrarModalCarrito()">Cerrar</button>
     </div>
 </div>
 
 <div id="adminPanel" class="modal">
     <div class="modal-content">
-        <h3 id="modalTitle">Gestionar Producto</h3>
+        <h3 id="modalTitle">Nuevo Producto</h3>
         <input id="p_id" type="hidden">
-        <input id="p_img" placeholder="Link de Imagen (.jpg / .png)">
-        <input id="p_name" placeholder="Nombre de la pieza">
-        <input id="p_price" type="number" placeholder="Precio Regular $">
+        <input id="p_img" placeholder="Link de Imagen">
+        <input id="p_name" placeholder="Nombre">
+        <input id="p_price" type="number" placeholder="Precio $">
         <input id="p_sale" type="number" placeholder="Precio Oferta $ (Opcional)">
-        <button class="btn-add" onclick="guardarProducto()">Guardar Cambios</button>
+        <button class="btn-add" onclick="guardarProducto()">Guardar</button>
         <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer;" onclick="cerrarModal()">Cancelar</button>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
-        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">CERRAR SESIÓN ADMIN</button>
+        <hr>
+        <button onclick="cerrarSesion()" style="width:100%; padding:10px; background:var(--danger); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold;">SALIR DEL MODO ADMIN</button>
     </div>
 </div>
 
@@ -108,7 +93,7 @@
     const db = firebase.database();
     let carrito = [];
 
-    // Cargar productos
+    // MOSTRAR PRODUCTOS
     db.ref('productos').on('value', (snapshot) => {
         const data = snapshot.val();
         const gal = document.getElementById('gallery');
@@ -123,28 +108,26 @@
             gal.innerHTML += `
                 <div class="card">
                     ${tieneOferta ? `<div class="badge-desc">OFERTA</div>` : ''}
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando+Imagen...'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando...'">
                     <div class="info">
                         <h4>${p.name}</h4>
                         <div>
                             ${tieneOferta ? `<span class="price-old">$${p.price}</span>` : ''}
                             <span class="price-new">$${precioFinal}</span>
                         </div>
-                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${precioFinal})">Agregar al Carrito</button>
+                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${precioFinal})">Agregar al carrito</button>
                     </div>
-                    ${esAdmin ? `
-                        <div class="admin-controls">
-                            <button class="edit-btn" onclick="prepararEdicion('${id}','${p.name}','${p.price}','${p.img}','${p.sale||''}')">✎ Editar / Oferta</button>
-                            <button class="del-btn" onclick="eliminar('${id}')">🗑 Borrar</button>
-                        </div>` : ''}
+                    ${esAdmin ? `<div class="admin-controls"><button class="edit-btn" onclick="prepararEdicion('${id}','${p.name}','${p.price}','${p.img}','${p.sale||''}')">Editar</button><button class="del-btn" onclick="eliminar('${id}')">Borrar</button></div>` : ''}
                 </div>`;
         }
     });
 
-    // Lógica del Carrito
+    // LÓGICA CARRITO
     function agregarAlCarrito(nombre, precio) {
         carrito.push({nombre, precio});
         document.getElementById('cartCount').innerText = carrito.length;
+        // Opcional: una pequeña alerta visual
+        console.log("Agregado:", nombre);
     }
 
     function abrirModalCarrito() {
@@ -154,15 +137,15 @@
         let total = 0;
 
         if(carrito.length === 0) {
-            lista.innerHTML = "<p style='text-align:center;'>Tu carrito está vacío.</p>";
+            lista.innerHTML = "<p>Aún no has agregado nada ☹️</p>";
             totalDiv.innerText = "Total: $0.00";
         } else {
             carrito.forEach((item, index) => {
                 total += parseFloat(item.precio);
                 lista.innerHTML += `
                     <div class="cart-item">
-                        <span>${item.nombre} - <b>$${item.precio}</b></span>
-                        <span class="remove-item" onclick="quitarDelCarrito(${index})">Quitar</span>
+                        <span>${item.nombre} ($${item.precio})</span>
+                        <span class="remove-btn" onclick="quitarDelCarrito(${index})">Quitar</span>
                     </div>`;
             });
             totalDiv.innerText = "Total: $" + total.toFixed(2);
@@ -176,55 +159,36 @@
         abrirModalCarrito();
     }
 
-    function confirmarPedido() {
-        if(carrito.length === 0) return alert("El carrito está vacío.");
-        let msg = "¡Hola Makai! ✨ Me gustaría pedir:\n\n";
+    function confirmarPedidoWhatsApp() {
+        if(carrito.length === 0) return alert("Tu carrito está vacío.");
+        let msg = "¡Hola Makai! ✨ Me interesan estos productos:\n\n";
         let total = 0;
         carrito.forEach(i => {
             msg += `• ${i.nombre} ($${i.precio})\n`;
             total += parseFloat(i.precio);
         });
-        msg += `\n*Total: $${total.toFixed(2)}*`;
+        msg += `\n*Total a pagar: $${total.toFixed(2)}*`;
         window.open(`https://wa.me/584123580010?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function cerrarModalCarrito() { document.getElementById('cartModal').classList.remove('active'); }
 
-    // Funciones Admin
+    // ADMIN
     function guardarProducto() {
         const id = document.getElementById('p_id').value;
-        const p = {
-            img: document.getElementById('p_img').value,
-            name: document.getElementById('p_name').value,
-            price: document.getElementById('p_price').value,
-            sale: document.getElementById('p_sale').value
-        };
-        if(!p.name || !p.img) return alert("Datos incompletos");
+        const p = { img: document.getElementById('p_img').value, name: document.getElementById('p_name').value, price: document.getElementById('p_price').value, sale: document.getElementById('p_sale').value };
         if(id) db.ref('productos/' + id).set(p); else db.ref('productos').push(p);
         cerrarModal();
     }
-
     function prepararEdicion(id, n, p, i, s) {
-        document.getElementById('p_id').value = id;
-        document.getElementById('p_name').value = n;
-        document.getElementById('p_price').value = p;
-        document.getElementById('p_img').value = i;
-        document.getElementById('p_sale').value = s;
-        document.getElementById('modalTitle').innerText = "Editar Producto";
+        document.getElementById('p_id').value = id; document.getElementById('p_name').value = n; document.getElementById('p_price').value = p; document.getElementById('p_img').value = i; document.getElementById('p_sale').value = s;
         document.getElementById('adminPanel').classList.add('active');
     }
-
     function cerrarSesion() { localStorage.removeItem('makaiAdmin'); location.reload(); }
-    function eliminar(id) { if(confirm("¿Eliminar joya?")) db.ref('productos/' + id).remove(); }
+    function eliminar(id) { if(confirm("¿Borrar?")) db.ref('productos/' + id).remove(); }
     function verificarAdmin() {
-        if(localStorage.getItem('makaiAdmin') === 'true') {
-            document.getElementById('p_id').value = '';
-            document.getElementById('modalTitle').innerText = "Nuevo Producto";
-            document.getElementById('adminPanel').classList.add('active');
-        } else if(prompt("Clave:") === "Makai") {
-            localStorage.setItem('makaiAdmin', 'true');
-            location.reload();
-        }
+        if(localStorage.getItem('makaiAdmin') === 'true') document.getElementById('adminPanel').classList.add('active');
+        else if(prompt("Clave:") === "Makai") { localStorage.setItem('makaiAdmin', 'true'); location.reload(); }
     }
     function cerrarModal() { document.getElementById('adminPanel').classList.remove('active'); }
 </script>
