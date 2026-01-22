@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Tienda Makai – Bisutería</title>
+    <title>Makai – Bisutería</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -22,7 +22,6 @@
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2.5rem; }
 
-        /* DISEÑO DE TARJETA (Igual al anterior) */
         .card { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: 0.3s; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 320px; object-fit: cover; }
@@ -34,18 +33,15 @@
 
         .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; }
         
-        /* BOTONES ADMIN (Solo se ven si entras con clave) */
         .admin-controls { display: flex; gap: 5px; margin-top: 10px; padding: 0 10px 15px; }
         .edit-btn { background: var(--edit); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
         .delete-btn { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
 
-        /* CARRITO FLOTANTE */
         .cart-float { position: fixed; bottom: 20px; right: 20px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 0.75rem; display: flex; justify-content: center; align-items: center; font-weight: bold; border: 2px solid white; }
 
-        /* MODALES */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
-        .modal-content { background: white; padding: 2.5rem; border-radius: 25px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 25px; width: 100%; max-width: 420px; position: relative; }
         .hidden { display: none !important; }
         input, .btn-dark, .btn-light { width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 1rem; border: 1px solid #eee; font-family: inherit; font-size: 1rem; }
         .btn-dark { background: #111; color: white; border: none; cursor: pointer; font-weight: 600; }
@@ -139,7 +135,6 @@
         });
     }
 
-    // --- FUNCIONES DEL ADMIN ---
     function manejarAdmin() {
         if(localStorage.getItem('adminLogged') === 'true') {
             indiceEdicion = null;
@@ -174,17 +169,15 @@
             price: document.getElementById('p_price').value,
             discount: document.getElementById('p_disc').value || 0
         };
-        if(!p.name || !p.price) return alert("Faltan datos obligatorios");
-
+        if(!p.name || !p.price) return alert("Faltan datos");
         if(indiceEdicion !== null) productos[indiceEdicion] = p;
         else productos.push(p);
-
         localStorage.setItem('products', JSON.stringify(productos));
         location.reload(); 
     }
 
     function borrarProducto(i) {
-        if(confirm("¿Seguro que quieres borrar este producto?")) {
+        if(confirm("¿Borrar producto?")) {
             productos.splice(i, 1);
             localStorage.setItem('products', JSON.stringify(productos));
             render();
@@ -195,7 +188,7 @@
         if(document.getElementById('user').value === USER_LOGIN && document.getElementById('pass').value === PASS_LOGIN) {
             localStorage.setItem('adminLogged', 'true');
             location.reload();
-        } else alert("Clave incorrecta");
+        } else alert("Error");
     }
 
     function cerrarSesion() {
@@ -203,14 +196,13 @@
         location.reload();
     }
 
-    // --- CARRITO ---
     function agregarAlCarrito(i) {
         const p = productos[i];
         const d = parseFloat(p.discount) || 0;
         const f = (p.price * (1 - d/100)).toFixed(2);
         carrito.push({ name: p.name, price: f });
         document.getElementById('cartCount').innerText = carrito.length;
-        alert("¡Agregado al carrito!");
+        alert("¡Agregado!");
     }
 
     function abrirCarrito() {
@@ -226,13 +218,10 @@
     }
 
     function enviarPedido() {
-        if(carrito.length === 0) return alert("El carrito está vacío");
-        let m = "¡Hola Makai Jewelry! ✨\nQuiero pedir estos productos:\n\n";
+        if(carrito.length === 0) return alert("Vacío");
+        let m = "¡Hola Makai! ✨ Pedido:\n\n";
         let t = 0;
-        carrito.forEach(item => {
-            m += `- ${item.name} ($${item.price})\n`;
-            t += parseFloat(item.price);
-        });
+        carrito.forEach(item => { m += `- ${item.name} ($${item.price})\n`; t += parseFloat(item.price); });
         m += `\n*TOTAL: $${t.toFixed(2)}*`;
         window.open(`https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(m)}`, '_blank');
     }
