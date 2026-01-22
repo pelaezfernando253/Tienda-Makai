@@ -1,269 +1,159 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <title>Makai – Joyas y Accesorios</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>Makai – Joyería y Accesorios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <style>
-        :root { 
-            --primary: #111; 
-            --accent: #E6005C; 
-            --whatsapp: #25D366; 
-            --edit: #007BFF; 
-            --bg-light: #f9f9f9;
-        }
-        * { box-sizing: border-box; }
-        body { 
-            margin: 0; 
-            font-family: 'Poppins', sans-serif; 
-            background: #fff; 
-            color: #111; 
-        }
-
-        header {
-            position: sticky; top: 0; z-index: 1000; background: #fff;
-            border-bottom: 1px solid #eee; display: flex;
-            justify-content: space-between; align-items: center; padding: 1rem 1.5rem;
-        }
-        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; }
-
-        .admin-btn { background: #eee; border: none; padding: .4rem .9rem; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
-
-        /* BANNER */
-        .banner {
-            height: 400px;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover;
-            display: flex; justify-content: center; align-items: center; text-align: center; color: white;
-        }
-        .banner h2 { 
-            font-family: 'Playfair Display', serif; font-size: 3rem; 
-            background: rgba(0,0,0,0.5); padding: 20px 40px; border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-
-        .container { padding: 2rem; max-width: 1200px; margin: auto; }
+        :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; color: #111; }
+        header { position: sticky; top: 0; z-index: 1000; background: #fff; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; }
+        header h1 { font-family: 'Playfair Display', serif; margin: 0; font-size: 1.8rem; letter-spacing: 2px; }
+        .banner { height: 350px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=2070&auto=format&fit=crop') center/cover; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
+        .banner h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; padding: 0 20px; }
+        .container { padding: 2.5rem 1.5rem; max-width: 1200px; margin: auto; }
         .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; }
-
-        /* TARJETAS */
-        .card { 
-            background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; 
-            display: flex; flex-direction: column; transition: 0.3s; 
-        }
+        .card { background: #fff; border-radius: 15px; overflow: hidden; border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: transform 0.3s ease; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 320px; object-fit: cover; }
-        .info { text-align: center; padding: 1.2rem; flex-grow: 1; }
-        .info h4 { margin: 10px 0; font-weight: 600; font-size: 1.1rem; }
-        
-        .price-old { text-decoration: line-through; color: #aaa; font-size: 0.85rem; }
-        .price-new { color: var(--accent); font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; }
-
-        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; }
-        
-        /* BOTONES ADMIN */
-        .admin-controls { display: flex; gap: 5px; margin: 10px; padding-bottom: 10px; }
-        .edit-btn { background: var(--edit); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
-        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
-
-        /* CARRITO */
-        .cart-float { position: fixed; bottom: 20px; right: 20px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 0.75rem; display: flex; justify-content: center; align-items: center; font-weight: bold; border: 2px solid white; }
-
-        /* MODALES */
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 3000; padding: 15px; display: none; }
+        .info { text-align: center; padding: 1.5rem; flex-grow: 1; }
+        .price { color: var(--accent); font-weight: 700; font-size: 1.3rem; margin-bottom: 15px; }
+        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        .admin-controls { display: flex; gap: 5px; padding: 10px; background: #fdfdfd; }
+        .del-btn { background: #ff4d4d; color: white; border: none; flex: 1; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
         .modal.active { display: flex; }
-        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
-        input, .btn-dark, .btn-light { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #ddd; font-family: inherit; }
-        .btn-dark { background: #111; color: white; border: none; cursor: pointer; font-weight: bold; }
-        .btn-light { background: #f5f5f5; color: #333; border: none; cursor: pointer; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 1rem; border: 1px solid #ddd; outline: none; }
+        .cart-float { position: fixed; bottom: 25px; right: 25px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Makai</h1>
-    <button class="admin-btn" onclick="abrirAdmin()">Admin</button>
+    <button style="background:#eee; border:none; padding:5px 15px; border-radius:20px; cursor:pointer;" onclick="verificarAdmin()">Admin</button>
 </header>
 
 <div class="banner">
-    <h2>Brillo Eterno. Estilo Único.</h2>
+    <h2>Elegancia en cada detalle</h2>
 </div>
 
 <div class="container">
     <div id="gallery" class="gallery"></div>
 </div>
 
-<div class="cart-float" onclick="abrirModal('cartModal')">
-    🛒 <div id="cartCount" class="cart-count">0</div>
-</div>
-
-<div id="cartModal" class="modal">
-    <div class="modal-content">
-        <h3>Tu Pedido</h3>
-        <div id="cartList" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
-        <div id="totalDisplay" style="font-weight: bold; text-align: right; font-size: 1.2rem;">Total: $0.00</div>
-        <button class="btn-dark" style="background: var(--whatsapp); margin-top: 15px;" onclick="enviarPedido()">Pedir por WhatsApp</button>
-        <button class="btn-light" onclick="cerrarModal('cartModal')">Cerrar</button>
-    </div>
-</div>
-
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <h3>Acceso Administrador</h3>
-        <input id="user" type="text" placeholder="Usuario">
-        <input id="pass" type="password" placeholder="Contraseña">
-        <button class="btn-dark" onclick="login()">Entrar</button>
-        <button class="btn-light" onclick="cerrarModal('loginModal')">Cancelar</button>
-    </div>
+<div id="cartCountBtn" class="cart-float" onclick="abrirCarrito()">
+    🛒 <span id="cartCount" style="font-size:12px; background:red; padding:2px 6px; border-radius:50%; position:absolute; top:5px; right:5px;">0</span>
 </div>
 
 <div id="adminPanel" class="modal">
     <div class="modal-content">
-        <h3 id="panelTitulo">Nuevo Producto</h3>
-        <input id="p_img" placeholder="URL de la Imagen (Link)">
-        <input id="p_name" placeholder="Nombre del producto">
+        <h3>Gestionar Makai</h3>
+        <input id="p_img" placeholder="URL de Imagen (Usa ImgBB)">
+        <input id="p_name" placeholder="Nombre del Producto">
         <input id="p_price" type="number" placeholder="Precio ($)">
-        <input id="p_disc" type="number" placeholder="Descuento % (Opcional)">
-        <button id="btnGuardar" class="btn-dark" onclick="guardarProducto()">Guardar Producto</button>
-        <button class="btn-light" onclick="cerrarSesion()" style="color: red; margin-top: 10px;">Cerrar Sesión</button>
-        <button class="btn-light" onclick="cerrarModal('adminPanel')">Volver</button>
+        <button class="btn-add" onclick="subirAFirebase()">Guardar en la Nube</button>
+        <button style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer; color:red;" onclick="cerrarSesion()">Cerrar Sesión</button>
+        <button style="width:100%; margin-top:5px; border:none; background:none; cursor:pointer;" onclick="cerrarModal()">Volver</button>
     </div>
 </div>
 
 <script>
-    const TEL = "584123580010"; 
-    const USER_OK = "Camila";
-    const PASS_OK = "Makai";
-
-    let productos = JSON.parse(localStorage.getItem('products')) || [];
+    // --- TUS CREDENCIALES REALES DESDE FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCsPFIJZ5tREVjBIJCLEdad1rVKkQlx9Qo",
+        authDomain: "makai-3809b.firebaseapp.com",
+        databaseURL: "https://makai-3809b-default-rtdb.firebaseio.com",
+        projectId: "makai-3809b",
+        storageBucket: "makai-3809b.firebasestorage.app",
+        messagingSenderId: "95115227741",
+        appId: "1:95115227741:web:ae5644751ced382a4453b4"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
     let carrito = [];
-    let editIndex = null;
 
-    function render() {
+    // LEER DATOS EN TIEMPO REAL
+    db.ref('productos').on('value', (snapshot) => {
+        const data = snapshot.val();
         const gal = document.getElementById('gallery');
         gal.innerHTML = '';
-        const esAdmin = localStorage.getItem('adminLogged') === 'true';
+        const esAdmin = localStorage.getItem('makaiAdmin') === 'true';
 
-        productos.forEach((p, i) => {
-            const precioBase = parseFloat(p.price) || 0;
-            const desc = parseFloat(p.discount) || 0;
-            const precioFinal = (precioBase * (1 - desc/100)).toFixed(2);
-
-            // BOTONES DE ADMIN (Solo si está logueado)
-            let controlesAdmin = esAdmin ? `
-                <div class="admin-controls">
-                    <button class="edit-btn" onclick="prepararEdicion(${i})">Editar</button>
-                    <button class="delete-btn" onclick="borrar(${i})">Borrar</button>
-                </div>` : '';
-
+        for (let id in data) {
+            const p = data[id];
             gal.innerHTML += `
                 <div class="card">
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Joyas+Makai'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Cargando+Imagen...'">
                     <div class="info">
                         <h4>${p.name}</h4>
-                        ${desc > 0 ? `<div class="price-old">$${precioBase.toFixed(2)}</div>` : ''}
-                        <div class="price-new">$${precioFinal}</div>
-                        <button class="btn-add" onclick="agregarAlCarrito(${i})">Agregar al carrito</button>
+                        <div class="price">$${parseFloat(p.price).toFixed(2)}</div>
+                        <button class="btn-add" onclick="agregarAlCarrito('${p.name}', ${p.price})">Comprar ahora</button>
                     </div>
-                    ${controlesAdmin}
+                    ${esAdmin ? `<div class="admin-controls"><button class="del-btn" onclick="eliminar('${id}')">Eliminar Producto</button></div>` : ''}
                 </div>`;
-        });
+        }
+    });
+
+    function subirAFirebase() {
+        const img = document.getElementById('p_img').value;
+        const name = document.getElementById('p_name').value;
+        const price = document.getElementById('p_price').value;
+
+        if(!name || !img || !price) return alert("Por favor, llena todos los campos.");
+        
+        db.ref('productos').push({ img, name, price });
+        cerrarModal();
+        alert("¡Joyas Makai actualizadas!");
     }
 
-    // --- LOGICA ADMIN ---
-    function abrirAdmin() {
-        if(localStorage.getItem('adminLogged') === 'true') {
-            editIndex = null;
-            limpiarInputs();
-            document.getElementById('panelTitulo').innerText = "Nuevo Producto";
-            abrirModal('adminPanel');
-        } else {
-            abrirModal('loginModal');
+    function eliminar(id) {
+        if(confirm("¿Seguro que quieres eliminar este producto permanentemente?")) {
+            db.ref('productos/' + id).remove();
         }
     }
 
-    function login() {
-        if(user.value === USER_OK && pass.value === PASS_OK) {
-            localStorage.setItem('adminLogged', 'true');
-            location.reload();
-        } else alert("Datos incorrectos");
+    function verificarAdmin() {
+        if(localStorage.getItem('makaiAdmin') === 'true') {
+            document.getElementById('adminPanel').classList.add('active');
+        } else {
+            if(prompt("Introduce la clave de acceso:") === "Makai") {
+                localStorage.setItem('makaiAdmin', 'true');
+                location.reload();
+            }
+        }
     }
 
     function cerrarSesion() {
-        localStorage.removeItem('adminLogged');
+        localStorage.removeItem('makaiAdmin');
         location.reload();
     }
 
-    function prepararEdicion(i) {
-        editIndex = i;
-        const p = productos[i];
-        document.getElementById('p_img').value = p.img;
-        document.getElementById('p_name').value = p.name;
-        document.getElementById('p_price').value = p.price;
-        document.getElementById('p_disc').value = p.discount || 0;
-        document.getElementById('panelTitulo').innerText = "Editando: " + p.name;
-        abrirModal('adminPanel');
-    }
+    function cerrarModal() { document.getElementById('adminPanel').classList.remove('active'); }
 
-    function guardarProducto() {
-        const p = {
-            img: document.getElementById('p_img').value,
-            name: document.getElementById('p_name').value,
-            price: document.getElementById('p_price').value,
-            discount: document.getElementById('p_disc').value || 0
-        };
-        if(!p.name || !p.price) return alert("Nombre y precio son obligatorios");
-
-        if(editIndex !== null) productos[editIndex] = p;
-        else productos.push(p);
-
-        localStorage.setItem('products', JSON.stringify(productos));
-        location.reload();
-    }
-
-    function borrar(i) {
-        if(confirm("¿Seguro que quieres eliminar este producto?")) {
-            productos.splice(i, 1);
-            localStorage.setItem('products', JSON.stringify(productos));
-            render();
-        }
-    }
-
-    // --- LOGICA CARRITO ---
-    function agregarAlCarrito(i) {
-        const p = productos[i];
-        const d = parseFloat(p.discount) || 0;
-        const f = (p.price * (1 - d/100)).toFixed(2);
-        carrito.push({ name: p.name, price: f });
+    function agregarAlCarrito(n, p) {
+        carrito.push({n, p});
         document.getElementById('cartCount').innerText = carrito.length;
-        alert("Producto añadido");
     }
 
-    function enviarPedido() {
-        if(carrito.length === 0) return alert("El carrito está vacío");
-        let msg = "¡Hola Makai! ✨ Este es mi pedido:\n\n";
+    function abrirCarrito() {
+        if(carrito.length === 0) return alert("Tu carrito está vacío.");
+        let msg = "¡Hola Makai! ✨ Me encantaron estas piezas:\n\n";
         let total = 0;
-        carrito.forEach(item => {
-            msg += `- ${item.name} ($${item.price})\n`;
-            total += parseFloat(item.price);
+        carrito.forEach(i => {
+            msg += `- ${i.n} ($${i.p})\n`;
+            total += parseFloat(i.p);
         });
-        msg += `\n*Total a pagar: $${total.toFixed(2)}*`;
-        window.open(`https://wa.me/${TEL}?text=${encodeURIComponent(msg)}`, '_blank');
+        msg += `\n*Total estimado: $${total.toFixed(2)}*`;
+        window.open(`https://wa.me/584123580010?text=${encodeURIComponent(msg)}`, '_blank');
     }
-
-    // --- UTILIDADES ---
-    function abrirModal(id) { document.getElementById(id).classList.add('active'); }
-    function cerrarModal(id) { document.getElementById(id).classList.remove('active'); }
-    function limpiarInputs() {
-        document.getElementById('p_img').value = '';
-        document.getElementById('p_name').value = '';
-        document.getElementById('p_price').value = '';
-        document.getElementById('p_disc').value = '';
-    }
-
-    window.onload = render;
 </script>
-
 </body>
 </html>
