@@ -1,231 +1,268 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Tienda Online de Bisutería</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>Tienda Makai – Bisutería</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-<style>
-/* ===== BASE GENERAL (PC Y MÓVIL) ===== */
-body{
-  margin:0;
-  font-family:'Segoe UI',Arial,sans-serif;
-  background:linear-gradient(135deg,#f8e7f0,#fdf6e3,#e6f0ff);
-  min-height:100vh;
-}
-header{
-  background:#111;
-  color:#fff;
-  padding:1rem;
-  text-align:center;
-}
-.container{padding:1.5rem}
-.hidden{display:none}
+    <style>
+        :root {
+            --primary: #111;
+            --accent: #E6005C;
+        }
 
-button{
-  padding:.6rem 1rem;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-.btn-dark{background:#111;color:#fff}
-.btn-light{background:#fff;color:#111}
-.btn-green{background:#25D366;color:#fff;width:100%;margin-top:1rem;display:block;text-align:center;text-decoration:none}
+        * { box-sizing: border-box; }
 
-#adminBtn{
-  position:fixed;
-  top:15px;
-  right:15px;
-  z-index:1000;
-}
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #fff;
+            color: #111;
+        }
 
-/* ===== CLIENTE ===== */
-#client{
-  background:linear-gradient(180deg,#fff0f7,#f0f8ff);
-  border-radius:20px;
-  padding:1rem;
-}
-.gallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:1.2rem;
-}
-.card{
-  background:#fff;
-  border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.12);
-  overflow:hidden;
-}
-.card img{width:100%;height:200px;object-fit:cover}
-.info{text-align:center;padding:1rem}
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
 
-/* ===== ADMIN ===== */
-.login,.admin{
-  max-width:420px;
-  margin:1rem auto;
-  background:#fff;
-  padding:1.2rem;
-  border-radius:16px;
-  box-shadow:0 10px 24px rgba(0,0,0,.15);
-}
-input{
-  width:100%;
-  padding:.55rem;
-  margin-bottom:.6rem;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-.admin-item{border-bottom:1px solid #ddd;padding:.5rem 0}
+        .admin-btn {
+            background: #111;
+            color: #fff;
+            border: none;
+            padding: .4rem .9rem;
+            border-radius: 20px;
+            cursor: pointer;
+        }
 
-/* ===== CARRITO ===== */
-.cart{
-  position:fixed;
-  right:0;
-  top:0;
-  width:320px;
-  height:100%;
-  background:#fff;
-  box-shadow:-6px 0 16px rgba(0,0,0,.2);
-  padding:1rem;
-}
+        .banner {
+            height: 55vh;
+            background: url('https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* ===== RESPONSIVE (PC Y MÓVIL SIN ERRORES) ===== */
-@media(max-width:768px){
-  .gallery{grid-template-columns:repeat(2,1fr)}
-  .cart{width:100%}
-}
-@media(max-width:480px){
-  .gallery{grid-template-columns:1fr}
-}
-</style>
+        .banner h2 {
+            background: rgba(255,255,255,.85);
+            padding: 1.2rem 2rem;
+            border-radius: 14px;
+        }
+
+        .container { padding: 2rem; max-width: 1300px; margin: auto; }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            border-radius: 18px;
+            overflow: hidden;
+            transition: .25s;
+            border: 1px solid #eee;
+        }
+
+        .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
+        .card img { width: 100%; height: 320px; object-fit: cover; }
+
+        .info { text-align: center; padding: 1rem; }
+        .price-old { text-decoration: line-through; color: #999; font-size: 0.9rem; }
+        .price-new { color: var(--accent); font-weight: 600; font-size: 1.1rem; }
+
+        .hidden { display: none !important; }
+
+        .admin-panel {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .admin-box {
+            background: #fff;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .admin-box input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: .8rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-dark { background: #111; color: #fff; border: none; padding: .8rem; cursor: pointer; width: 100%; border-radius: 8px; margin-bottom: 0.5rem; }
+        .btn-light { background: #eee; color: #333; border: none; padding: .8rem; cursor: pointer; width: 100%; border-radius: 8px; }
+
+        .delete-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @media(max-width:768px){ .banner{height:40vh} }
+    </style>
 </head>
 <body>
 
-<header><h2>💎 Bisutería Online</h2></header>
-<button id="adminBtn" class="btn-dark" onclick="showLogin()">Admin</button>
+<header>
+    <h1>Makai Jewelry</h1>
+    <button class="admin-btn" onclick="openLogin()">Admin</button>
+</header>
+
+<section class="banner">
+    <h2>Nueva Colección ✨</h2>
+</section>
 
 <div class="container">
-
-<div id="login" class="login hidden">
-<h3>Login Admin</h3>
-<input id="user" placeholder="Usuario">
-<input id="pass" type="password" placeholder="Contraseña">
-<button class="btn-dark" onclick="loginAdmin()">Entrar</button>
+    <div id="gallery" class="gallery"></div>
 </div>
 
-<div id="admin" class="admin hidden">
-<h3>Modo Admin</h3>
-<input id="imageInput" placeholder="Ruta imagen">
-<input id="nameInput" placeholder="Nombre">
-<input id="priceInput" type="number" placeholder="Precio">
-<button class="btn-dark" onclick="addProduct()">Agregar</button>
-<div id="adminList"></div>
-<button class="btn-light" onclick="logout()">Cerrar</button>
+<div id="login" class="admin-panel hidden">
+    <div class="admin-box">
+        <h3>Acceso Administrador</h3>
+        <input id="adminUser" type="text" placeholder="Usuario">
+        <input id="adminPass" type="password" placeholder="Contraseña">
+        <button class="btn-dark" onclick="loginAdmin()">Entrar</button>
+        <button class="btn-light" onclick="closeLogin()">Cancelar</button>
+    </div>
 </div>
 
-<div id="client">
-<h3>Catálogo</h3>
-<div id="gallery" class="gallery"></div>
-<button class="btn-dark" onclick="toggleCart()">🛒 Ver carrito</button>
-</div>
-</div>
-
-<div id="cart" class="cart hidden">
-<button class="btn-light" onclick="toggleCart()" style="float:right">✖</button>
-<h3>Carrito</h3>
-<div id="cartItems"></div>
-<a id="whatsapp" class="btn-green" target="_blank">Comprar por WhatsApp</a>
+<div id="admin" class="admin-panel hidden">
+    <div class="admin-box">
+        <h3>Panel de Control</h3>
+        <input id="p_img" placeholder="URL de la imagen">
+        <input id="p_name" placeholder="Nombre del producto">
+        <input id="p_price" type="number" placeholder="Precio">
+        <input id="p_discount" type="number" placeholder="Descuento % (opcional)">
+        <button class="btn-dark" onclick="addProduct()">Guardar Producto</button>
+        <button class="btn-light" onclick="logoutAdmin()">Cerrar Sesión</button>
+        <button class="btn-light" style="margin-top:10px" onclick="closeAdminPanel()">Cerrar Ventana</button>
+    </div>
 </div>
 
 <script>
-const ADMIN_USER='admin';
-const ADMIN_PASS='1234';
-let products=JSON.parse(localStorage.getItem('products'))||[];
-let cart=[];
+    const ADMIN_USER = 'Camila';
+    const ADMIN_PASS = 'Makai';
 
-function saveProducts(){localStorage.setItem('products',JSON.stringify(products))}
+    let products = JSON.parse(localStorage.getItem('products')) || [];
 
-products=products.map(p=>({
-  name:p.name,
-  price:parseFloat(p.price),
-  url:p.url,
-  discount:p.discount?parseFloat(p.discount):0
-}));
-saveProducts();
+    // Función para renderizar la galería
+    function render() {
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = '';
+        const isAdmin = localStorage.getItem('adminLogged') === 'true';
 
-const loginDiv=document.getElementById('login');
-const admin=document.getElementById('admin');
-const gallery=document.getElementById('gallery');
-const cartDiv=document.getElementById('cart');
-const cartItems=document.getElementById('cartItems');
-const whatsapp=document.getElementById('whatsapp');
-const adminList=document.getElementById('adminList');
+        products.forEach((p, index) => {
+            const price = parseFloat(p.price);
+            const discount = parseFloat(p.discount) || 0;
+            
+            let priceHTML = discount > 0 
+                ? `<div class="price-old">$${price.toFixed(2)}</div>
+                   <div class="price-new">$${(price * (1 - discount / 100)).toFixed(2)} (-${discount}%)</div>`
+                : `<div class="price-new">$${price.toFixed(2)}</div>`;
 
-function showLogin(){loginDiv.classList.toggle('hidden')}
-function logout(){admin.classList.add('hidden')}
-
-function loginAdmin(){
-  if(user.value===ADMIN_USER&&pass.value===ADMIN_PASS){
-    loginDiv.classList.add('hidden');
-    admin.classList.remove('hidden');
-    renderAdmin();
-  } else alert('Datos incorrectos');
-}
-
-function addProduct(){
-  if(!imageInput.value||!nameInput.value||!priceInput.value) return;
-  products.push({name:nameInput.value,price:parseFloat(priceInput.value),url:imageInput.value,discount:0});
-  saveProducts();renderAdmin();renderProducts();
-  imageInput.value=nameInput.value=priceInput.value='';
-}
-
-function editProduct(i){
-  const p=products[i];
-  const n=prompt('Nombre',p.name);
-  const pr=prompt('Precio',p.price);
-  const img=prompt('Imagen',p.url);
-  if(n!==null) p.name=n;
-  if(!isNaN(pr)) p.price=parseFloat(pr);
-  if(img!==null) p.url=img;
-  saveProducts();renderAdmin();renderProducts();
-}
-
-function discountProduct(i){
-  const d=prompt('Descuento %',products[i].discount);
-  if(!isNaN(d)) products[i].discount=parseFloat(d);
-  saveProducts();renderAdmin();renderProducts();
-}
-
-function renderAdmin(){
-  adminList.innerHTML='';
-  products.forEach((p,i)=>{
-    adminList.innerHTML+=`<div class='admin-item'>${p.name} - $${p.price}<br><button onclick='editProduct(${i})'>Editar</button> <button onclick='discountProduct(${i})'>Descuento</button></div>`;
-  });
-}
-
-function renderProducts(){
-  gallery.innerHTML='';
-  products.forEach((p,i)=>{
-    let price=`<p>$${p.price.toFixed(2)}</p>`;
-    if(p.discount>0){
-      const f=(p.price*(1-p.discount/100)).toFixed(2);
-      price=`<p style='text-decoration:line-through;color:#888'>$${p.price.toFixed(2)}</p><p style='color:#e6005c;font-weight:bold'>$${f} (-${p.discount}%)</p>`;
+            gallery.innerHTML += `
+                <div class="card">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Imagen+No+Disponible'">
+                    <div class="info">
+                        <h4>${p.name}</h4>
+                        ${priceHTML}
+                        ${isAdmin ? `<button class="delete-btn" onclick="deleteProduct(${index})">Eliminar</button>` : ''}
+                    </div>
+                </div>`;
+        });
     }
-    gallery.innerHTML+=`<div class='card'><img src='${p.url}'><div class='info'><h4>${p.name}</h4>${price}<button class='btn-dark' onclick='addToCart(${i})'>Agregar</button></div></div>`;
-  });
-}
 
-function addToCart(i){cart.push(products[i]);renderCart()}
-function toggleCart(){cartDiv.classList.toggle('hidden')}
+    // Funciones de Login
+    function openLogin() {
+        if (localStorage.getItem('adminLogged') === 'true') {
+            document.getElementById('admin').classList.remove('hidden');
+        } else {
+            document.getElementById('login').classList.remove('hidden');
+        }
+    }
 
-function renderCart(){
-  cartItems.innerHTML='';
-  let msg='Hola, quiero comprar:%0A';
-  cart.forEach(p=>{cartItems.innerHTML+=`<div>${p.name}</div>`;msg+=`- ${p.name}%0A`});
-  whatsapp.href=`https://wa.me/584123580010?text=${msg}`;
-}
+    function closeLogin() { document.getElementById('login').classList.add('hidden'); }
+    function closeAdminPanel() { document.getElementById('admin').classList.add('hidden'); }
 
-renderProducts();
+    function loginAdmin() {
+        const u = document.getElementById('adminUser').value;
+        const p = document.getElementById('adminPass').value;
+        if(u === ADMIN_USER && p === ADMIN_PASS) {
+            localStorage.setItem('adminLogged', 'true');
+            closeLogin();
+            document.getElementById('admin').classList.remove('hidden');
+            render();
+        } else {
+            alert('Usuario o contraseña incorrectos');
+        }
+    }
+
+    function logoutAdmin() {
+        localStorage.removeItem('adminLogged');
+        document.getElementById('admin').classList.add('hidden');
+        render();
+    }
+
+    // Funciones de Productos
+    function addProduct() {
+        const img = document.getElementById('p_img').value;
+        const name = document.getElementById('p_name').value;
+        const price = document.getElementById('p_price').value;
+        const discount = document.getElementById('p_discount').value || 0;
+
+        if(!img || !name || !price) {
+            alert("Por favor, completa los campos principales (Imagen, Nombre y Precio)");
+            return;
+        }
+
+        products.push({ img, name, price, discount });
+        localStorage.setItem('products', JSON.stringify(products));
+        
+        // Limpiar campos
+        document.getElementById('p_img').value = '';
+        document.getElementById('p_name').value = '';
+        document.getElementById('p_price').value = '';
+        document.getElementById('p_discount').value = '';
+
+        render();
+        alert("Producto agregado con éxito");
+    }
+
+    function deleteProduct(index) {
+        if(confirm("¿Estás seguro de que quieres eliminar este producto?")) {
+            products.splice(index, 1);
+            localStorage.setItem('products', JSON.stringify(products));
+            render();
+        }
+    }
+
+    // Al cargar la página
+    window.onload = () => {
+        render();
+    }
 </script>
+
 </body>
 </html>
