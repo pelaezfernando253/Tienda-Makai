@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Tienda Makai – Gestión Profesional</title>
+    <title>Tienda Makai – Bisutería</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007BFF; }
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fdfdfd; color: #111; }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fff; color: #111; }
 
         header {
             position: sticky; top: 0; z-index: 1000; background: #fff;
@@ -20,44 +20,50 @@
         .admin-btn { background: #eee; border: none; padding: .4rem .9rem; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
 
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 2.5rem; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2.5rem; }
 
+        /* DISEÑO DE TARJETA (Igual al anterior) */
         .card { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: 0.3s; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
-        .card img { width: 100%; height: 300px; object-fit: cover; }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 320px; object-fit: cover; }
         .info { text-align: center; padding: 1.2rem; flex-grow: 1; }
+        .info h4 { margin: 10px 0; font-weight: 600; }
         
         .price-old { text-decoration: line-through; color: #aaa; font-size: 0.85rem; }
         .price-new { color: var(--accent); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
 
-        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-bottom: 5px; }
+        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; }
         
-        .admin-controls { display: flex; gap: 5px; margin-top: 10px; padding: 0 10px 10px; }
-        .edit-btn { background: var(--edit); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; font-size: 0.8rem; }
-        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; font-size: 0.8rem; }
+        /* BOTONES ADMIN (Solo se ven si entras con clave) */
+        .admin-controls { display: flex; gap: 5px; margin-top: 10px; padding: 0 10px 15px; }
+        .edit-btn { background: var(--edit); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
+        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; flex: 1; font-weight: bold; }
 
+        /* CARRITO FLOTANTE */
         .cart-float { position: fixed; bottom: 20px; right: 20px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .cart-count { position: absolute; top: 0; right: 0; background: red; color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
+        .cart-count { position: absolute; top: -5px; right: -5px; background: red; color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 0.75rem; display: flex; justify-content: center; align-items: center; font-weight: bold; border: 2px solid white; }
 
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
-        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
+        /* MODALES */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 25px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .hidden { display: none !important; }
-        input, .btn-dark, .btn-light { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #ddd; }
-        .btn-dark { background: #111; color: white; border: none; cursor: pointer; font-weight: bold; }
+        input, .btn-dark, .btn-light { width: 100%; padding: 14px; border-radius: 12px; margin-bottom: 1rem; border: 1px solid #eee; font-family: inherit; font-size: 1rem; }
+        .btn-dark { background: #111; color: white; border: none; cursor: pointer; font-weight: 600; }
+        .btn-light { background: #f5f5f5; color: #555; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Makai Jewelry</h1>
-    <button class="admin-btn" onclick="abrirAdmin()">Admin Panel</button>
+    <button class="admin-btn" onclick="manejarAdmin()">Admin</button>
 </header>
 
 <div class="container">
     <div id="gallery" class="gallery"></div>
 </div>
 
-<div class="cart-float" onclick="toggleModal('cartModal')">
+<div class="cart-float" onclick="abrirCarrito()">
     🛒 <div id="cartCount" class="cart-count">0</div>
 </div>
 
@@ -65,44 +71,43 @@
     <div class="modal-content">
         <h3>Tu Pedido</h3>
         <div id="cartList" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px;"></div>
-        <div id="totalDisplay" style="font-weight: bold; text-align: right; font-size: 1.2rem;">Total: $0.00</div>
-        <button class="btn-dark" style="background: var(--whatsapp); margin-top: 15px;" onclick="enviarPedido()">Enviar a WhatsApp</button>
-        <button class="btn-light" onclick="toggleModal('cartModal')">Cerrar</button>
+        <div id="totalDisplay" style="font-weight: bold; text-align: right; font-size: 1.3rem;">Total: $0.00</div>
+        <button class="btn-dark" style="background: var(--whatsapp); margin-top: 15px;" onclick="enviarPedido()">Pedir por WhatsApp</button>
+        <button class="btn-light" onclick="cerrarModal('cartModal')">Seguir viendo</button>
     </div>
 </div>
 
 <div id="loginModal" class="modal hidden">
     <div class="modal-content">
-        <h3>Login Admin</h3>
+        <h3>Panel Makai</h3>
         <input id="user" type="text" placeholder="Usuario">
-        <input id="pass" type="password" placeholder="Clave">
+        <input id="pass" type="password" placeholder="Contraseña">
         <button class="btn-dark" onclick="login()">Entrar</button>
-        <button class="btn-light" onclick="toggleModal('loginModal')">Cancelar</button>
+        <button class="btn-light" onclick="cerrarModal('loginModal')">Cerrar</button>
     </div>
 </div>
 
 <div id="adminPanel" class="modal hidden">
     <div class="modal-content">
-        <h3 id="adminTitle">Nuevo Producto</h3>
-        <input id="p_img" placeholder="URL Imagen">
+        <h3 id="panelTitulo">Nuevo Producto</h3>
+        <input id="p_img" placeholder="URL de la Imagen">
         <input id="p_name" placeholder="Nombre">
         <input id="p_price" type="number" placeholder="Precio">
-        <input id="p_disc" type="number" placeholder="Descuento %">
-        <button id="btnGuardar" class="btn-dark" onclick="guardarProducto()">Guardar Producto</button>
-        <button class="btn-light" onclick="cerrarSesion()" style="color: red;">Cerrar Sesión</button>
-        <button class="btn-light" onclick="toggleModal('adminPanel')">Cancelar</button>
+        <input id="p_disc" type="number" placeholder="Descuento % (opcional)">
+        <button id="btnGuardar" class="btn-dark" onclick="guardar()">Guardar Producto</button>
+        <button class="btn-light" onclick="cerrarSesion()" style="color: #ff4d4d; margin-top: 20px;">Cerrar Sesión</button>
+        <button class="btn-light" onclick="cerrarModal('adminPanel')">Volver</button>
     </div>
 </div>
 
 <script>
-    // --- DATOS ACTUALIZADOS ---
-    const TEL = "584123580010"; 
-    const USER_OK = "Camila";
-    const PASS_OK = "Makai";
+    const NUMERO_WSP = "584123580010"; 
+    const USER_LOGIN = "Camila";
+    const PASS_LOGIN = "Makai";
 
     let productos = JSON.parse(localStorage.getItem('products')) || [];
     let carrito = [];
-    let editIndex = null;
+    let indiceEdicion = null;
 
     function render() {
         const gal = document.getElementById('gallery');
@@ -110,14 +115,14 @@
         const esAdmin = localStorage.getItem('adminLogged') === 'true';
 
         productos.forEach((p, i) => {
-            const precioBase = parseFloat(p.price) || 0;
+            const precio = parseFloat(p.price) || 0;
             const desc = parseFloat(p.discount) || 0;
-            const precioFinal = (precioBase * (1 - desc/100)).toFixed(2);
+            const final = (precio * (1 - desc/100)).toFixed(2);
 
             let htmlAdmin = esAdmin ? `
                 <div class="admin-controls">
-                    <button class="edit-btn" onclick="prepararEdicion(${i})">Editar</button>
-                    <button class="delete-btn" onclick="borrar(${i})">Eliminar</button>
+                    <button class="edit-btn" onclick="editarProducto(${i})">Editar</button>
+                    <button class="delete-btn" onclick="borrarProducto(${i})">Borrar</button>
                 </div>` : '';
 
             gal.innerHTML += `
@@ -125,22 +130,116 @@
                     <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Joyas+Makai'">
                     <div class="info">
                         <h4>${p.name}</h4>
-                        ${desc > 0 ? `<div class="price-old">$${precioBase.toFixed(2)}</div>` : ''}
-                        <div class="price-new">$${precioFinal}</div>
-                        <button class="btn-add" onclick="agregarAlCarrito(${i})">Agregar al carrito</button>
+                        ${desc > 0 ? `<div class="price-old">$${precio.toFixed(2)}</div>` : ''}
+                        <div class="price-new">$${final}</div>
+                        <button class="btn-add" onclick="agregarAlCarrito(${i})">Comprar</button>
                     </div>
                     ${htmlAdmin}
                 </div>`;
         });
     }
 
-    // --- FUNCIONES ADMIN ---
-    function abrirAdmin() {
+    // --- FUNCIONES DEL ADMIN ---
+    function manejarAdmin() {
         if(localStorage.getItem('adminLogged') === 'true') {
-            editIndex = null;
-            document.getElementById('adminTitle').innerText = "Nuevo Producto";
+            indiceEdicion = null;
+            document.getElementById('panelTitulo').innerText = "Nuevo Producto";
             document.getElementById('btnGuardar').innerText = "Guardar Producto";
-            limpiarForm();
-            toggleModal('adminPanel');
+            document.getElementById('p_img').value = '';
+            document.getElementById('p_name').value = '';
+            document.getElementById('p_price').value = '';
+            document.getElementById('p_disc').value = '';
+            document.getElementById('adminPanel').classList.remove('hidden');
         } else {
-            toggleModal('loginModal');
+            document.getElementById('loginModal').classList.remove('hidden');
+        }
+    }
+
+    function editarProducto(i) {
+        indiceEdicion = i;
+        const p = productos[i];
+        document.getElementById('p_img').value = p.img;
+        document.getElementById('p_name').value = p.name;
+        document.getElementById('p_price').value = p.price;
+        document.getElementById('p_disc').value = p.discount || 0;
+        document.getElementById('panelTitulo').innerText = "Editar Producto";
+        document.getElementById('btnGuardar').innerText = "Guardar Cambios";
+        document.getElementById('adminPanel').classList.remove('hidden');
+    }
+
+    function guardar() {
+        const p = {
+            img: document.getElementById('p_img').value,
+            name: document.getElementById('p_name').value,
+            price: document.getElementById('p_price').value,
+            discount: document.getElementById('p_disc').value || 0
+        };
+        if(!p.name || !p.price) return alert("Faltan datos obligatorios");
+
+        if(indiceEdicion !== null) productos[indiceEdicion] = p;
+        else productos.push(p);
+
+        localStorage.setItem('products', JSON.stringify(productos));
+        location.reload(); 
+    }
+
+    function borrarProducto(i) {
+        if(confirm("¿Seguro que quieres borrar este producto?")) {
+            productos.splice(i, 1);
+            localStorage.setItem('products', JSON.stringify(productos));
+            render();
+        }
+    }
+
+    function login() {
+        if(document.getElementById('user').value === USER_LOGIN && document.getElementById('pass').value === PASS_LOGIN) {
+            localStorage.setItem('adminLogged', 'true');
+            location.reload();
+        } else alert("Clave incorrecta");
+    }
+
+    function cerrarSesion() {
+        localStorage.removeItem('adminLogged');
+        location.reload();
+    }
+
+    // --- CARRITO ---
+    function agregarAlCarrito(i) {
+        const p = productos[i];
+        const d = parseFloat(p.discount) || 0;
+        const f = (p.price * (1 - d/100)).toFixed(2);
+        carrito.push({ name: p.name, price: f });
+        document.getElementById('cartCount').innerText = carrito.length;
+        alert("¡Agregado al carrito!");
+    }
+
+    function abrirCarrito() {
+        const list = document.getElementById('cartList');
+        list.innerHTML = '';
+        let t = 0;
+        carrito.forEach(item => {
+            t += parseFloat(item.price);
+            list.innerHTML += `<p style="display:flex; justify-content:space-between"><span>${item.name}</span> <b>$${item.price}</b></p>`;
+        });
+        document.getElementById('totalDisplay').innerText = "Total: $" + t.toFixed(2);
+        document.getElementById('cartModal').classList.remove('hidden');
+    }
+
+    function enviarPedido() {
+        if(carrito.length === 0) return alert("El carrito está vacío");
+        let m = "¡Hola Makai Jewelry! ✨\nQuiero pedir estos productos:\n\n";
+        let t = 0;
+        carrito.forEach(item => {
+            m += `- ${item.name} ($${item.price})\n`;
+            t += parseFloat(item.price);
+        });
+        m += `\n*TOTAL: $${t.toFixed(2)}*`;
+        window.open(`https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(m)}`, '_blank');
+    }
+
+    function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    window.onload = render;
+</script>
+</body>
+</html>
