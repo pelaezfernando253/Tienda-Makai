@@ -2,266 +2,242 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
-    <title>Tienda Makai – Bisutería</title>
+    <title>Tienda Makai – Gestión Profesional</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --primary: #111;
-            --accent: #E6005C;
-        }
-
+        :root { --primary: #111; --accent: #E6005C; --whatsapp: #25D366; --edit: #007BFF; }
         * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: #fff;
-            color: #111;
-        }
+        body { margin: 0; font-family: 'Poppins', sans-serif; background: #fdfdfd; color: #111; }
 
         header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: #fff;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
+            position: sticky; top: 0; z-index: 1000; background: #fff;
+            border-bottom: 1px solid #eee; display: flex;
+            justify-content: space-between; align-items: center; padding: 1rem 1.5rem;
         }
 
-        .admin-btn {
-            background: #111;
-            color: #fff;
-            border: none;
-            padding: .4rem .9rem;
-            border-radius: 20px;
-            cursor: pointer;
-        }
+        .admin-btn { background: #eee; border: none; padding: .4rem .9rem; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
 
-        .banner {
-            height: 55vh;
-            background: url('https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        .container { padding: 2rem; max-width: 1200px; margin: auto; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 2.5rem; }
 
-        .banner h2 {
-            background: rgba(255,255,255,.85);
-            padding: 1.2rem 2rem;
-            border-radius: 14px;
-        }
+        .card { background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #f0f0f0; display: flex; flex-direction: column; transition: 0.3s; }
+        .card img { width: 100%; height: 300px; object-fit: cover; }
+        .info { text-align: center; padding: 1.2rem; flex-grow: 1; }
+        
+        .price-old { text-decoration: line-through; color: #aaa; font-size: 0.85rem; }
+        .price-new { color: var(--accent); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
 
-        .container { padding: 2rem; max-width: 1300px; margin: auto; }
+        .btn-add { background: var(--primary); color: white; border: none; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; margin-bottom: 5px; }
+        
+        /* BOTONES ADMIN */
+        .admin-controls { display: flex; gap: 5px; margin-top: 10px; }
+        .edit-btn { background: var(--edit); color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
+        .delete-btn { background: #ff4d4d; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; flex: 1; font-weight: bold; }
 
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 2rem;
-        }
+        .cart-float { position: fixed; bottom: 20px; right: 20px; background: var(--whatsapp); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .cart-count { position: absolute; top: 0; right: 0; background: red; color: white; width: 20px; height: 20px; border-radius: 50%; font-size: 0.7rem; display: flex; justify-content: center; align-items: center; }
 
-        .card {
-            border-radius: 18px;
-            overflow: hidden;
-            transition: .25s;
-            border: 1px solid #eee;
-        }
-
-        .card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,.12); }
-        .card img { width: 100%; height: 320px; object-fit: cover; }
-
-        .info { text-align: center; padding: 1rem; }
-        .price-old { text-decoration: line-through; color: #999; font-size: 0.9rem; }
-        .price-new { color: var(--accent); font-weight: 600; font-size: 1.1rem; }
-
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 3000; padding: 15px; }
+        .modal-content { background: white; padding: 2rem; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
         .hidden { display: none !important; }
-
-        .admin-panel {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .admin-box {
-            background: #fff;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .admin-box input {
-            width: 100%;
-            margin-bottom: 1rem;
-            padding: .8rem;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-        }
-
-        .btn-dark { background: #111; color: #fff; border: none; padding: .8rem; cursor: pointer; width: 100%; border-radius: 8px; margin-bottom: 0.5rem; }
-        .btn-light { background: #eee; color: #333; border: none; padding: .8rem; cursor: pointer; width: 100%; border-radius: 8px; }
-
-        .delete-btn {
-            background: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        @media(max-width:768px){ .banner{height:40vh} }
+        input, .btn-dark, .btn-light { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 0.8rem; border: 1px solid #ddd; }
+        .btn-dark { background: #111; color: white; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>Makai Jewelry</h1>
-    <button class="admin-btn" onclick="openLogin()">Admin</button>
+    <button class="admin-btn" onclick="abrirAdmin()">Admin Panel</button>
 </header>
-
-<section class="banner">
-    <h2>Nueva Colección ✨</h2>
-</section>
 
 <div class="container">
     <div id="gallery" class="gallery"></div>
 </div>
 
-<div id="login" class="admin-panel hidden">
-    <div class="admin-box">
-        <h3>Acceso Administrador</h3>
-        <input id="adminUser" type="text" placeholder="Usuario">
-        <input id="adminPass" type="password" placeholder="Contraseña">
-        <button class="btn-dark" onclick="loginAdmin()">Entrar</button>
-        <button class="btn-light" onclick="closeLogin()">Cancelar</button>
+<div class="cart-float" onclick="toggleModal('cartModal')">
+    🛒 <div id="cartCount" class="cart-count">0</div>
+</div>
+
+<div id="cartModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Tu Pedido</h3>
+        <div id="cartList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+        <div id="totalDisplay" style="font-weight: bold; text-align: right; font-size: 1.2rem;">Total: $0.00</div>
+        <button class="btn-dark" style="background: var(--whatsapp); margin-top: 15px;" onclick="enviarPedido()">Enviar a WhatsApp</button>
+        <button class="btn-light" onclick="toggleModal('cartModal')">Cerrar</button>
     </div>
 </div>
 
-<div id="admin" class="admin-panel hidden">
-    <div class="admin-box">
-        <h3>Panel de Control</h3>
-        <input id="p_img" placeholder="URL de la imagen">
-        <input id="p_name" placeholder="Nombre del producto">
+<div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Login Admin</h3>
+        <input id="user" type="text" placeholder="Usuario">
+        <input id="pass" type="password" placeholder="Clave">
+        <button class="btn-dark" onclick="login()">Entrar</button>
+        <button class="btn-light" onclick="toggleModal('loginModal')">Cancelar</button>
+    </div>
+</div>
+
+<div id="adminPanel" class="modal hidden">
+    <div class="modal-content">
+        <h3 id="adminTitle">Nuevo Producto</h3>
+        <input id="p_img" placeholder="URL Imagen">
+        <input id="p_name" placeholder="Nombre">
         <input id="p_price" type="number" placeholder="Precio">
-        <input id="p_discount" type="number" placeholder="Descuento % (opcional)">
-        <button class="btn-dark" onclick="addProduct()">Guardar Producto</button>
-        <button class="btn-light" onclick="logoutAdmin()">Cerrar Sesión</button>
-        <button class="btn-light" style="margin-top:10px" onclick="closeAdminPanel()">Cerrar Ventana</button>
+        <input id="p_disc" type="number" placeholder="Descuento %">
+        <button id="btnGuardar" class="btn-dark" onclick="guardarProducto()">Guardar Producto</button>
+        <button class="btn-light" onclick="cerrarSesion()" style="color: red;">Cerrar Sesión</button>
+        <button class="btn-light" onclick="cerrarPanelAdmin()">Cancelar</button>
     </div>
 </div>
 
 <script>
-    const ADMIN_USER = 'Camila';
-    const ADMIN_PASS = 'Makai';
+    const TEL = "584120000000"; 
+    const USER_OK = "Camila";
+    const PASS_OK = "Makai";
 
-    let products = JSON.parse(localStorage.getItem('products')) || [];
+    let productos = JSON.parse(localStorage.getItem('products')) || [];
+    let carrito = [];
+    let editIndex = null; // Para saber si estamos editando
 
-    // Función para renderizar la galería
     function render() {
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-        const isAdmin = localStorage.getItem('adminLogged') === 'true';
+        const gal = document.getElementById('gallery');
+        gal.innerHTML = '';
+        const esAdmin = localStorage.getItem('adminLogged') === 'true';
 
-        products.forEach((p, index) => {
-            const price = parseFloat(p.price);
-            const discount = parseFloat(p.discount) || 0;
-            
-            let priceHTML = discount > 0 
-                ? `<div class="price-old">$${price.toFixed(2)}</div>
-                   <div class="price-new">$${(price * (1 - discount / 100)).toFixed(2)} (-${discount}%)</div>`
-                : `<div class="price-new">$${price.toFixed(2)}</div>`;
+        productos.forEach((p, i) => {
+            const precioBase = parseFloat(p.price);
+            const desc = parseFloat(p.discount) || 0;
+            const precioFinal = (precioBase * (1 - desc/100)).toFixed(2);
 
-            gallery.innerHTML += `
+            let controlesAdmin = esAdmin ? `
+                <div class="admin-controls">
+                    <button class="edit-btn" onclick="prepararEdicion(${i})">Editar</button>
+                    <button class="delete-btn" onclick="borrar(${i})">Eliminar</button>
+                </div>` : '';
+
+            gal.innerHTML += `
                 <div class="card">
-                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Imagen+No+Disponible'">
+                    <img src="${p.img}" onerror="this.src='https://via.placeholder.com/300?text=Joyas+Makai'">
                     <div class="info">
                         <h4>${p.name}</h4>
-                        ${priceHTML}
-                        ${isAdmin ? `<button class="delete-btn" onclick="deleteProduct(${index})">Eliminar</button>` : ''}
+                        ${desc > 0 ? `<div class="price-old">$${precioBase.toFixed(2)}</div>` : ''}
+                        <div class="price-new">$${precioFinal}</div>
+                        <button class="btn-add" onclick="agregarAlCarrito(${i})">Agregar al carrito</button>
+                        ${controlesAdmin}
                     </div>
                 </div>`;
         });
     }
 
-    // Funciones de Login
-    function openLogin() {
-        if (localStorage.getItem('adminLogged') === 'true') {
-            document.getElementById('admin').classList.remove('hidden');
-        } else {
-            document.getElementById('login').classList.remove('hidden');
-        }
+    // --- FUNCIONES ADMIN ---
+    function abrirAdmin() {
+        editIndex = null;
+        document.getElementById('adminTitle').innerText = "Nuevo Producto";
+        document.getElementById('btnGuardar').innerText = "Guardar Producto";
+        limpiarForm();
+        if(localStorage.getItem('adminLogged') === 'true') toggleModal('adminPanel');
+        else toggleModal('loginModal');
     }
 
-    function closeLogin() { document.getElementById('login').classList.add('hidden'); }
-    function closeAdminPanel() { document.getElementById('admin').classList.add('hidden'); }
-
-    function loginAdmin() {
-        const u = document.getElementById('adminUser').value;
-        const p = document.getElementById('adminPass').value;
-        if(u === ADMIN_USER && p === ADMIN_PASS) {
-            localStorage.setItem('adminLogged', 'true');
-            closeLogin();
-            document.getElementById('admin').classList.remove('hidden');
-            render();
-        } else {
-            alert('Usuario o contraseña incorrectos');
-        }
-    }
-
-    function logoutAdmin() {
-        localStorage.removeItem('adminLogged');
-        document.getElementById('admin').classList.add('hidden');
-        render();
-    }
-
-    // Funciones de Productos
-    function addProduct() {
-        const img = document.getElementById('p_img').value;
-        const name = document.getElementById('p_name').value;
-        const price = document.getElementById('p_price').value;
-        const discount = document.getElementById('p_discount').value || 0;
-
-        if(!img || !name || !price) {
-            alert("Por favor, completa los campos principales (Imagen, Nombre y Precio)");
-            return;
-        }
-
-        products.push({ img, name, price, discount });
-        localStorage.setItem('products', JSON.stringify(products));
+    function prepararEdicion(i) {
+        editIndex = i;
+        const p = productos[i];
+        document.getElementById('p_img').value = p.img;
+        document.getElementById('p_name').value = p.name;
+        document.getElementById('p_price').value = p.price;
+        document.getElementById('p_disc').value = p.discount || 0;
         
-        // Limpiar campos
+        document.getElementById('adminTitle').innerText = "Editando: " + p.name;
+        document.getElementById('btnGuardar').innerText = "Actualizar Cambios";
+        toggleModal('adminPanel');
+    }
+
+    function guardarProducto() {
+        const nuevoProd = {
+            img: document.getElementById('p_img').value,
+            name: document.getElementById('p_name').value,
+            price: document.getElementById('p_price').value,
+            discount: document.getElementById('p_disc').value || 0
+        };
+
+        if(!nuevoProd.name || !nuevoProd.price) return alert("Faltan datos");
+
+        if(editIndex !== null) {
+            productos[editIndex] = nuevoProd; // Actualiza
+        } else {
+            productos.push(nuevoProd); // Crea nuevo
+        }
+
+        localStorage.setItem('products', JSON.stringify(productos));
+        location.reload();
+    }
+
+    function borrar(i) {
+        if(confirm("¿Eliminar definitivamente?")) {
+            productos.splice(i, 1);
+            localStorage.setItem('products', JSON.stringify(productos));
+            render();
+        }
+    }
+
+    function login() {
+        if(user.value === USER_OK && pass.value === PASS_OK) {
+            localStorage.setItem('adminLogged', 'true');
+            location.reload();
+        } else alert("Datos incorrectos");
+    }
+
+    function cerrarSesion() {
+        localStorage.removeItem('adminLogged');
+        location.reload();
+    }
+
+    // --- CARRITO ---
+    function agregarAlCarrito(i) {
+        const p = productos[i];
+        const desc = parseFloat(p.discount) || 0;
+        const final = (p.price * (1 - desc/100)).toFixed(2);
+        carrito.push({ name: p.name, price: final });
+        actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+        const lista = document.getElementById('cartList');
+        const count = document.getElementById('cartCount');
+        const totalD = document.getElementById('totalDisplay');
+        lista.innerHTML = '';
+        let total = 0;
+        carrito.forEach((item, index) => {
+            total += parseFloat(item.price);
+            lista.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span>${item.name}</span> <span>$${item.price}</span>
+            </div>`;
+        });
+        count.innerText = carrito.length;
+        totalD.innerText = `Total: $${total.toFixed(2)}`;
+    }
+
+    function enviarPedido() {
+        if(carrito.length === 0) return alert("El carrito está vacío");
+        let msg = "Hola Makai Jewelry! ✨ Este es mi pedido:\n\n";
+        carrito.forEach(item => msg += `- ${item.name} ($${item.price})\n`);
+        window.open(`https://wa.me/${TEL}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function toggleModal(id) { document.getElementById(id).classList.toggle('hidden'); }
+    function cerrarPanelAdmin() { toggleModal('adminPanel'); }
+    function limpiarForm() {
         document.getElementById('p_img').value = '';
         document.getElementById('p_name').value = '';
         document.getElementById('p_price').value = '';
-        document.getElementById('p_discount').value = '';
-
-        render();
-        alert("Producto agregado con éxito");
+        document.getElementById('p_disc').value = '';
     }
 
-    function deleteProduct(index) {
-        if(confirm("¿Estás seguro de que quieres eliminar este producto?")) {
-            products.splice(index, 1);
-            localStorage.setItem('products', JSON.stringify(products));
-            render();
-        }
-    }
-
-    // Al cargar la página
-    window.onload = () => {
-        render();
-    }
+    window.onload = render;
 </script>
 
 </body>
